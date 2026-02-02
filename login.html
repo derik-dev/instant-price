@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aceda à sua conta - OrçaFácil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .clip-hero {
+            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+        }
+
+        @media (max-width: 1024px) {
+            .clip-hero {
+                clip-path: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white min-h-screen flex items-stretch">
+
+    <!-- Lado Esquerdo (Formulário) -->
+    <div
+        class="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-12 lg:px-24 xl:px-32 py-12 bg-white relative z-10">
+
+        <!-- Logo Topo Mobile/Desktop -->
+        <a href="index.html" class="flex items-center gap-2.5 mb-16 self-start group">
+            <div
+                class="bg-blue-600 text-white p-1.5 rounded-lg group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/20">
+                <i class="ph-bold ph-hexagon text-xl"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight text-slate-800">OrçaFácil</span>
+        </a>
+
+        <div>
+            <h1 id="page-title" class="text-3xl md:text-4xl font-bold text-slate-900 mb-2 tracking-tight">Bem-vindo de
+                volta</h1>
+            <p id="page-subtitle" class="text-slate-500 mb-8">Insira os seus dados para aceder à sua conta.</p>
+
+            <!-- Toggle de Login/Cadastro -->
+            <div class="bg-slate-100 p-1.5 rounded-xl flex mb-8 w-fit relative">
+                <div class="absolute inset-y-1.5 left-1.5 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm transition-transform duration-300 ease-spring"
+                    id="toggle-bg"></div>
+                <button onclick="setMode('login')"
+                    class="relative z-10 px-6 py-2 text-sm font-bold rounded-lg transition-colors duration-300 text-slate-900"
+                    id="btn-login-toggle">
+                    Entrar
+                </button>
+                <button onclick="setMode('register')"
+                    class="relative z-10 px-6 py-2 text-sm font-bold rounded-lg transition-colors duration-300 text-slate-500"
+                    id="btn-register-toggle">
+                    Criar Conta
+                </button>
+            </div>
+
+            <form onsubmit="event.preventDefault(); processarAuth();" class="space-y-5 max-w-sm">
+
+                <div id="field-name" class="hidden transition-all duration-300 overflow-hidden"
+                    style="height: 0; opacity: 0;">
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">Nome
+                        Completo</label>
+                    <div class="relative">
+                        <i class="ph-bold ph-user absolute left-4 top-3.5 text-slate-400"></i>
+                        <input type="text" id="input-name"
+                            class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium"
+                            placeholder="Seu nome">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">E-mail
+                        Profissional</label>
+                    <div class="relative">
+                        <i class="ph-bold ph-envelope-simple absolute left-4 top-3.5 text-slate-400"></i>
+                        <input type="email" id="input-email" required
+                            class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium"
+                            placeholder="nome@exemplo.com">
+                    </div>
+                </div>
+
+                <div>
+                    <label
+                        class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">Palavra-passe</label>
+                    <div class="relative">
+                        <i class="ph-bold ph-lock-key absolute left-4 top-3.5 text-slate-400"></i>
+                        <input type="password" id="input-password" required
+                            class="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium placeholder:font-normal"
+                            placeholder="••••••••">
+                        <button type="button" onclick="togglePassword()"
+                            class="absolute right-4 top-3 text-slate-400 hover:text-blue-600 transition-colors">
+                            <i class="ph-bold ph-eye text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" id="btn-submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-95 flex justify-center items-center gap-2">
+                        <span>Entrar na Plataforma</span> <i class="ph-bold ph-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+
+            <p class="mt-8 text-xs text-slate-400">
+                Protegido por reCAPTCHA e sujeito à <a href="#" class="underline hover:text-blue-600">Política de
+                    Privacidade</a>.
+            </p>
+        </div>
+    </div>
+
+    <!-- Lado Direito (Imagem Inspiracional) -->
+    <div class="hidden lg:block lg:w-1/2 bg-blue-600 relative overflow-hidden clip-hero">
+        <div
+            class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center mix-blend-overlay opacity-30">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-tr from-blue-900/90 to-blue-600/80"></div>
+
+        <div class="relative z-10 h-full flex flex-col justify-end p-20 text-white">
+            <div class="mb-8">
+                <i class="ph-fill ph-quotes text-6xl text-blue-300 opacity-50"></i>
+            </div>
+            <h2 class="text-4xl font-bold leading-tight mb-6">"Meus clientes fecham 2x mais rápido desde que comecei a
+                enviar orçamentos profissionais."</h2>
+            <div class="flex items-center gap-4">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80"
+                    alt="Avatar" class="w-12 h-12 rounded-full border-2 border-white/30">
+                <div>
+                    <p class="font-bold text-lg">Carlos Mendes</p>
+                    <p class="text-blue-200 text-sm">Consultor Elétrico</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Interação -->
+    <script>
+        function setMode(mode) {
+            const toggleBg = document.getElementById('toggle-bg');
+            const btnLogin = document.getElementById('btn-login-toggle');
+            const btnRegister = document.getElementById('btn-register-toggle');
+            const fieldName = document.getElementById('field-name');
+            const title = document.getElementById('page-title');
+            const subtitle = document.getElementById('page-subtitle');
+            const submitBtn = document.querySelector('#btn-submit span');
+
+            if (mode === 'login') {
+                toggleBg.style.transform = 'translateX(0%)';
+                btnLogin.classList.replace('text-slate-500', 'text-slate-900');
+                btnRegister.classList.replace('text-slate-900', 'text-slate-500');
+
+                // Animação de esconder nome
+                fieldName.style.height = '0px';
+                fieldName.style.opacity = '0';
+                setTimeout(() => fieldName.classList.add('hidden'), 300);
+
+                title.innerText = 'Bem-vindo de volta';
+                subtitle.innerText = 'Insira os seus dados para aceder à sua conta.';
+                submitBtn.innerText = 'Entrar na Plataforma';
+            } else {
+                toggleBg.style.transform = 'translateX(100%)';
+                btnRegister.classList.replace('text-slate-500', 'text-slate-900');
+                btnLogin.classList.replace('text-slate-900', 'text-slate-500');
+
+                // Animação de mostrar nome
+                fieldName.classList.remove('hidden');
+                setTimeout(() => {
+                    fieldName.style.height = '74px'; // Altura aproximada do campo
+                    fieldName.style.opacity = '1';
+                }, 10);
+
+                title.innerText = 'Comece Grátis';
+                subtitle.innerText = 'Junte-se a 1.200+ profissionais hoje.';
+                submitBtn.innerText = 'Criar Minha Conta';
+            }
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('input-password');
+            const icon = document.querySelector('button[onclick="togglePassword()"] i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('ph-eye', 'ph-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('ph-eye-slash', 'ph-eye');
+            }
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+
+</html>

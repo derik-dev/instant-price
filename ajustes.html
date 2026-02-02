@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações • OrçaFácil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Previne zoom no iOS */
+        input,
+        select,
+        textarea {
+            font-size: 16px !important;
+        }
+
+        @media (min-width: 768px) {
+
+            input,
+            select,
+            textarea {
+                font-size: 0.875rem !important;
+            }
+        }
+    </style>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="bg-[#F8FAFC] text-slate-800 min-h-screen pb-40">
+
+    <!-- Header Padronizado -->
+    <header
+        class="bg-white border-b border-slate-200 px-6 py-4 mb-8 sticky top-0 z-20 flex justify-between items-center shadow-sm">
+        <a href="dashboard.html"
+            class="flex items-center gap-2 text-slate-800 hover:opacity-80 transition-opacity group">
+            <div
+                class="bg-blue-600 text-white p-1.5 rounded-lg group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/20">
+                <i class="ph-bold ph-hexagon text-xl"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight text-blue-900">OrçaFácil</span>
+        </a>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-8 animate-fade-in">
+            <!-- Dados Básicos -->
+            <div>
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i class="ph-duotone ph-buildings text-blue-600"></i> Informações da Empresa
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Nome da Empresa / O Seu
+                            Nome</label>
+                        <input type="text" id="conf-nome"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-medium"
+                            placeholder="Ex: Silva Soluções Elétricas">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">NIF</label>
+                        <input type="text" id="conf-doc"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                            placeholder="123456789">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Telemóvel /
+                            WhatsApp</label>
+                        <input type="text" id="conf-tel"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                            placeholder="+351 912 345 678">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Morada Completa</label>
+                        <input type="text" id="conf-end"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                            placeholder="Rua Exemplo, 123 - Centro, Cidade - Distrito">
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-100">
+
+
+
+            <!-- Identidade Visual -->
+            <div>
+                <h2 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i class="ph-duotone ph-paint-brush text-blue-600"></i> Identidade Visual
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Logo da
+                            Empresa</label>
+                        <input type="file" id="conf-logo-input" accept="image/*" class="hidden"
+                            onchange="converterImagemBase64(this, 'conf-logo')">
+                        <input type="hidden" id="conf-logo">
+                        <div onclick="document.getElementById('conf-logo-input').click()"
+                            class="w-full px-4 py-8 bg-slate-50 border border-dashed border-slate-300 rounded-lg cursor-pointer hover:bg-slate-100 transition-all flex flex-col items-center justify-center gap-2 text-slate-500 text-sm">
+                            <i class="ph-bold ph-image text-2xl"></i>
+                            <span id="btn-logo-text">Selecionar Logo</span>
+                            <span class="text-[10px] text-slate-400">Recomendado: Fundo Transparente</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center bg-slate-50 rounded-lg border border-slate-100 p-4">
+                        <div id="preview-logo-container" class="text-center">
+                            <p class="text-xs text-slate-400 mb-2">Pré-visualização</p>
+                            <img id="preview-logo" src="" class="h-20 object-contain mx-auto hidden">
+                            <span id="preview-logo-placeholder" class="text-sm font-bold text-slate-300">Sem
+                                Logo</span>
+                        </div>
+                    </div>
+
+                    <!-- Cor Primária para PDF -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Cores do Orçamento
+                            (PDF)</label>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-slate-50 border border-slate-100 rounded-xl">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Cor de
+                                    Fundo (Cabeçalho)</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="color" id="conf-cor-primaria" value="#2563eb"
+                                        class="w-10 h-10 rounded border border-slate-200 cursor-pointer shadow-sm">
+                                    <div class="flex-1">
+                                        <p class="text-xs text-slate-600 font-medium">Cor da Marca</p>
+                                        <p class="text-[10px] text-slate-400">Define o fundo do cabeçalho da tabela.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Cor do
+                                    Texto (Título)</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="color" id="conf-cor-texto" value="#ffffff"
+                                        class="w-10 h-10 rounded border border-slate-200 cursor-pointer shadow-sm">
+                                    <div class="flex-1">
+                                        <p class="text-xs text-slate-600 font-medium">Cor da Fonte</p>
+                                        <p class="text-[10px] text-slate-400">Define a cor de "Descrição" e "Total".
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-100">
+
+            <div class="flex justify-between items-center pt-4">
+                <button onclick="salvarConfiguracoesSupabase()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20">
+                    <i class="ph-bold ph-check"></i> Guardar
+                </button>
+                <button onclick="sair()"
+                    class="text-red-500 font-bold text-sm hover:underline flex items-center gap-2"><i
+                        class="ph-bold ph-sign-out"></i> Sair da Conta</button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Navegação Inferior Premium -->
+    <nav
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border border-slate-200 rounded-full shadow-2xl p-2 flex items-center gap-1 z-50 whitespace-nowrap scale-90 md:scale-100 transition-all origin-bottom print:hidden">
+        <a href="dashboard.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-house text-lg"></i> <span class="hidden md:inline">Dashboard</span>
+        </a>
+        <a href="orcamentos.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-file-text text-lg"></i> <span class="hidden md:inline">Orçamentos</span>
+        </a>
+        <a href="criar-orcamento.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-plus text-lg"></i> <span class="hidden md:inline">Novo</span>
+        </a>
+        <a href="clientes.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-users text-lg"></i> <span class="hidden md:inline">Clientes</span>
+        </a>
+        <a href="catalogo.html"
+            class="flex items-center gap-2 px-4 py-2.5 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-cube text-lg"></i> <span class="hidden md:inline">Itens</span>
+        </a>
+        <a href="ajustes.html"
+            class="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-full font-bold text-sm shadow-lg shadow-blue-500/30 transition-all">
+            <i class="ph-bold ph-gear text-lg"></i> <span class="hidden md:inline">Config</span>
+        </a>
+    </nav>
+    <script>
+        // Função para converter imagem em Base64
+        function converterImagemBase64(input, targetId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(targetId).value = e.target.result;
+
+                    // Atualiza previews
+                    if (targetId === 'conf-logo') {
+                        const img = document.getElementById('preview-logo');
+                        img.src = e.target.result;
+                        img.classList.remove('hidden');
+                        document.getElementById('preview-logo-placeholder').classList.add('hidden');
+                        document.getElementById('btn-logo-text').innerText = input.files[0].name;
+                    } else if (targetId === 'conf-pix-qr') {
+                        const div = document.getElementById('preview-qr');
+                        div.classList.remove('hidden');
+                        div.querySelector('img').src = e.target.result;
+                        document.getElementById('btn-qr-text').innerText = input.files[0].name;
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Máscaras (Adaptadas para Portugal)
+        const mascaraDoc = (val) => {
+            val = val.replace(/\D/g, "").slice(0, 9); // NIF tem 9 dígitos
+            // Formato 123 456 789
+            return val.replace(/(\d{3})(\d)/, "$1 $2")
+                .replace(/(\d{3}) (\d{3})(\d)/, "$1 $2 $3");
+        };
+
+        const mascaraTel = (val) => {
+            val = val.replace(/\D/g, "").slice(0, 9); // Tlm 9 dígitos
+            // Formato 912 345 678
+            return val.replace(/(\d{3})(\d)/, "$1 $2")
+                .replace(/(\d{3}) (\d{3})(\d)/, "$1 $2 $3");
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Aplica máscaras nos inputs de configurações
+            const inputDoc = document.getElementById('conf-doc');
+            const inputTel = document.getElementById('conf-tel');
+
+            if (inputDoc) inputDoc.addEventListener('input', (e) => e.target.value = mascaraDoc(e.target.value));
+            if (inputTel) inputTel.addEventListener('input', (e) => e.target.value = mascaraTel(e.target.value));
+        });
+    </script>
+    <script src="app.js?v=1002"></script>
+</body>
+
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes • OrçaFácil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="bg-[#F8FAFC] text-slate-800">
+    <main class="min-h-screen p-6 md:p-10 max-w-7xl mx-auto pb-40">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900">Os Meus Clientes</h1>
+            <button onclick="novoCliente()"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all">
+                <i class="ph-bold ph-plus"></i> Novo Cliente
+            </button>
+        </header>
+
+        <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 border-b border-slate-100 text-xs uppercase text-slate-500 font-semibold">
+                    <tr>
+                        <th class="p-5 pl-8">Nome / Empresa</th>
+                        <th class="p-5 hidden md:table-cell">NIF</th>
+                        <th class="p-5 hidden md:table-cell">Email</th>
+                        <th class="p-5 hidden md:table-cell">Telemóvel</th>
+                        <th class="p-5 hidden lg:table-cell">Morada</th>
+                        <th class="p-5 text-right pr-8">Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-clientes" class="divide-y divide-slate-50 text-sm hover:bg-slate-50/50">
+                </tbody>
+            </table>
+
+            <div id="lista-clientes-empty" class="hidden p-12 text-center">
+                <div
+                    class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+                    <i class="ph-duotone ph-users text-3xl"></i>
+                </div>
+                <h3 class="text-slate-900 font-bold mb-1">Ainda sem clientes</h3>
+                <p class="text-slate-500 text-sm">Adicione o seu primeiro cliente para começar.</p>
+            </div>
+        </div>
+        <!-- Spacer -->
+        <div class="h-32 w-full"></div>
+    </main>
+
+    <!-- Modal Cadastro Centralizado e Completo -->
+    <div id="modal-cliente" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+            onclick="toggleModal('modal-cliente', 'close')"></div>
+
+        <!-- Modal -->
+        <div
+            class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6 md:p-8 transform transition-all scale-100 overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-900" id="modal-cliente-titulo">Novo Cliente</h2>
+                <button onclick="toggleModal('modal-cliente', 'close')"
+                    class="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="ph-bold ph-x text-xl"></i>
+                </button>
+            </div>
+
+            <form id="form-cliente" class="space-y-5">
+                <input type="hidden" id="cli-id">
+
+                <!-- Linha 1: Nome e Empresa -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Nome do Contacto <span
+                                class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400"><i
+                                    class="ph-bold ph-user text-lg"></i></span>
+                            <input type="text" id="cli-nome"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition-all placeholder:text-slate-400 font-medium"
+                                placeholder="Ex: Maria Silva" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Empresa (Opcional)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400"><i
+                                    class="ph-bold ph-buildings text-lg"></i></span>
+                            <input type="text" id="cli-empresa"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition-all placeholder:text-slate-400 font-medium"
+                                placeholder="Ex: Acme Corp">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Linha 2: Email e Telefone -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400"><i
+                                    class="ph-bold ph-envelope-simple text-lg"></i></span>
+                            <input type="email" id="cli-email"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition-all placeholder:text-slate-400 font-medium"
+                                placeholder="email@exemplo.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Telemóvel</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400"><i
+                                    class="ph-bold ph-whatsapp-logo text-lg"></i></span>
+                            <input type="tel" id="cli-phone"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition-all placeholder:text-slate-400 font-medium"
+                                placeholder="+351 912 345 678">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Linha 3: Doc e Endereço -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="md:col-span-1">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">NIF</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400"><i
+                                    class="ph-bold ph-identification-card text-lg"></i></span>
+                            <input type="text" id="cli-cpf"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition-all placeholder:text-slate-400 font-medium"
+                                placeholder="123456789">
+                        </div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Morada Completa</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400"><i
+                                    class="ph-bold ph-map-pin text-lg"></i></span>
+                            <input type="text" id="cli-endereco"
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition-all placeholder:text-slate-400 font-medium"
+                                placeholder="Rua, Número, Distrito, Concelho">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button type="button" onclick="salvarCliente()"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all flex justify-center items-center gap-2">
+                        <i class="ph-bold ph-check"></i> Guardar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navegação Inferior -->
+    <nav
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border border-slate-200 rounded-full shadow-2xl p-2 flex items-center gap-2 z-50">
+        <a href="dashboard.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-house text-xl"></i> <span class="hidden md:block">Dashboard</span>
+        </a>
+        <a href="orcamentos.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-file-text text-xl"></i> <span class="hidden md:block">Orçamentos</span>
+        </a>
+        <a href="criar-orcamento.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-plus text-xl"></i> <span class="hidden md:block">Novo</span>
+        </a>
+        <a href="clientes.html"
+            class="flex items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-full font-bold text-sm transition-all shadow-blue-500/20 shadow-lg">
+            <i class="ph-bold ph-users text-xl"></i> <span class="hidden md:block">Clientes</span>
+        </a>
+        <a href="catalogo.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-cube text-xl"></i> <span class="hidden md:block">Itens</span>
+        </a>
+        <a href="ajustes.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-gear text-xl"></i> <span class="hidden md:block">Config</span>
+        </a>
+    </nav>
+
+    <script src="app.js"></script>
+    <script>
+        // Máscaras (Adaptadas para Portugal)
+        const mascaraDoc = (val) => {
+            val = val.replace(/\D/g, "").slice(0, 9); // NIF tem 9 dígitos
+            return val.replace(/(\d{3})(\d)/, "$1 $2")
+                .replace(/(\d{3}) (\d{3})(\d)/, "$1 $2 $3");
+        };
+
+        const mascaraTel = (val) => {
+            val = val.replace(/\D/g, "").slice(0, 9); // Tlm 9 dígitos
+            return val.replace(/(\d{3})(\d)/, "$1 $2")
+                .replace(/(\d{3}) (\d{3})(\d)/, "$1 $2 $3");
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputDoc = document.getElementById('cli-cpf');
+            const inputTel = document.getElementById('cli-phone');
+
+            if (inputDoc) inputDoc.addEventListener('input', (e) => e.target.value = mascaraDoc(e.target.value));
+            if (inputTel) inputTel.addEventListener('input', (e) => e.target.value = mascaraTel(e.target.value));
+        });
+    </script>
+</body>
+
+</html>

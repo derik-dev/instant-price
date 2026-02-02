@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação • OrçaFácil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; }
+        .prose h1 { @apply text-3xl font-bold text-slate-900 mb-6; }
+
+        .prose h2 {
+            @apply text-2xl font-bold text-slate-800 mt-10 mb-4 border-b border-slate-200 pb-2;
+        }
+
+        .prose h3 {
+            @apply text-xl font-bold text-slate-800 mt-8 mb-3;
+        }
+
+        .prose p {
+            @apply text-slate-600 leading-relaxed mb-4;
+        }
+
+        .prose ul {
+            @apply list-disc list-inside text-slate-600 mb-4 space-y-1;
+        }
+
+        .prose pre {
+            @apply bg-slate-900 text-slate-50 p-4 rounded-lg overflow-x-auto mb-6 text-sm font-mono border border-slate-700 shadow-lg;
+        }
+
+        .prose code {
+            @apply font-mono text-blue-600 bg-blue-50 px-1 py-0.5 rounded text-sm font-bold;
+        }
+
+        .prose pre code {
+            @apply text-slate-50 bg-transparent p-0 text-xs font-normal;
+        }
+
+        .nav-active {
+            @apply bg-blue-50 text-blue-600 font-bold border-r-2 border-blue-600;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body class="bg-[#F8FAFC] text-slate-800 flex h-screen overflow-hidden">
+
+    <!-- Sidebar Navegação -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex-col hidden md:flex">
+        <div class="p-6 border-b border-slate-100">
+            <a href="dashboard.html" class="flex items-center gap-2 group">
+                <div class="bg-blue-600 text-white p-1.5 rounded-lg shadow-lg shadow-blue-500/20">
+                    <i class="ph-bold ph-hexagon text-xl"></i>
+                </div>
+                <span class="font-bold text-xl tracking-tight text-blue-900">OrçaFácil</span>
+            </a>
+            <p class="text-xs text-slate-400 mt-2 font-medium">Central de Ajuda & API</p>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+            <p class="px-3 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 mt-2">Guia do Usuário</p>
+            <a href="#intro"
+                class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 rounded-lg hover:bg-slate-50 transition-colors">
+                <i class="ph-bold ph-star"></i> Introdução
+            </a>
+            <a href="#primeiros-passos"
+                class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 rounded-lg hover:bg-slate-50 transition-colors">
+                <i class="ph-bold ph-rocket-launch"></i> Primeiros Passos
+            </a>
+            <a href="#criando-orcamentos"
+                class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 rounded-lg hover:bg-slate-50 transition-colors">
+                <i class="ph-bold ph-file-plus"></i> Criando Orçamentos
+            </a>
+            <a href="#clientes-itens"
+                class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 rounded-lg hover:bg-slate-50 transition-colors">
+                <i class="ph-bold ph-users"></i> Clientes e Itens
+            </a>
+            <a href="#configuracoes"
+                class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 rounded-lg hover:bg-slate-50 transition-colors">
+                <i class="ph-bold ph-gear"></i> Configurações
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100">
+            <a href="dashboard.html"
+                class="flex items-center gap-2 justify-center w-full px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors text-sm">
+                <i class="ph-bold ph-arrow-left"></i> Voltar ao App
+            </a>
+        </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 overflow-y-auto scroll-smooth">
+        <!-- Mobile Header -->
+        <div
+            class="md:hidden sticky top-0 bg-white/90 backdrop-blur border-b border-slate-200 p-4 flex justify-between items-center z-10">
+            <span class="font-bold text-blue-900 flex items-center gap-2">
+                <i class="ph-bold ph-book-open text-blue-600"></i> Docs
+            </span>
+            <a href="dashboard.html" class="text-sm font-bold text-slate-500">Voltar</a>
+        </div>
+
+        <div class="max-w-4xl mx-auto px-6 py-12 prose">
+
+            <!-- SEÇÃO: GUIA DO USUÁRIO -->
+            <section id="intro">
+                <h1>Documentação Oficial OrçaFácil</h1>
+                <p>Bem-vindo à documentação do OrçaFácil. Aqui você encontrará tudo o que precisa para gerenciar seus
+                    orçamentos, configurar sua empresa e integrar o sistema via API.</p>
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-8 flex items-start gap-4 not-prose">
+                    <div class="bg-blue-100 p-2 rounded-lg text-blue-600 mt-1">
+                        <i class="ph-bold ph-info text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-blue-900 text-lg">Precisa de ajuda rápida?</h4>
+                        <p class="text-blue-700/80 text-sm mt-1">Se você tiver dúvidas técnicas ou sobre cobrança, entre
+                            em contato diretamente com o suporte.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="primeiros-passos">
+                <h2>1. Primeiros Passos</h2>
+                <p>O OrçaFácil foi desenhado para ser simples e intuitivo. Ao acessar o sistema pela primeira vez,
+                    recomendamos:</p>
+                <ol class="list-decimal list-inside space-y-2 text-slate-600 mb-6">
+                    <li><strong>Complete o cadastro da sua empresa:</strong> Vá em <a href="ajustes.html"
+                            class="text-blue-600 hover:underline">Configurações</a> e preencha seus dados. Isso garante
+                        que seus orçamentos saiam com o cabeçalho correto.</li>
+                    <li><strong>Defina sua identidade visual:</strong> Adicione seu logo e escolha as cores da sua marca
+                        para personalizar os documentos gerados.</li>
+                    <li><strong>Cadastre seus dados de recebimento:</strong> Configure sua chave PIX e QR Code para
+                        facilitar o pagamento dos clientes.</li>
+                </ol>
+            </section>
+
+            <section id="criando-orcamentos">
+                <h2>2. Criando Orçamentos</h2>
+                <p>Para criar um orçamento profissional em segundos:</p>
+                <ul>
+                    <li>Acesse a aba <strong>"Novo"</strong> no menu inferior ou clique em "Novo Orçamento" no
+                        Dashboard.</li>
+                    <li><strong>Selecione o Cliente:</strong> Escolha um existente ou cadastre um novo rapidamente
+                        clicando em "+ Novo Cliente".</li>
+                    <li><strong>Adicione Itens:</strong> Clique em "Adicionar Item". Você pode selecionar do seu
+                        catálogo ou criar um item na hora.</li>
+                    <li><strong>Defina Valores e Prazos:</strong> Ajuste a quantidade, descontos (se houver) e o prazo
+                        de entrega.</li>
+                    <li><strong>Salvar e Gerar:</strong> Ao finalizar, o sistema gera uma página exclusiva para o
+                        orçamento que pode ser salva em PDF ou impressa.</li>
+                </ul>
+                <p class="text-sm bg-slate-100 p-3 rounded border-l-4 border-yellow-400">💡 <strong>Dica:</strong> Todos
+                    os orçamentos criados ficam salvos na aba "Orçamentos" com status "Pendente" até que você os altere
+                    para "Aprovado".</p>
+            </section>
+
+            <section id="clientes-itens">
+                <h2>3. Clientes e Catálogo</h2>
+                <h3>Gerenciando Clientes</h3>
+                <p>Mantenha sua base de contatos organizada. Você pode salvar além do nome e telefone: NIF,
+                    endereço e e-mail. Esses dados são puxados automaticamente ao criar um novo orçamento.</p>
+
+                <h3>Catálogo de Itens</h3>
+                <p>O catálogo agiliza sua rotina. Cadastre seus produtos e serviços recorrentes com preço padrão e
+                    descrição. Na hora de orçar, basta pesquisar e adicionar.</p>
+            </section>
+
+            <section id="configuracoes">
+                <h2>4. Configurações da Empresa</h2>
+                <p>Em <strong>Ajustes</strong>, você controla como sua marca aparece:</p>
+                <ul>
+                    <li><strong>Logo e Cores:</strong> Faça upload da sua logomarca (fundo transparente recomendado) e
+                        escolha as cores primária e secundária.</li>
+                    <li><strong>Dados Legais:</strong> NIF, Endereço e Telefone aparecem no rodapé dos documentos.</li>
+                    <li><strong>PIX e QR Code:</strong> Gere um QR Code do seu PIX no banco e faça upload da imagem. O
+                        sistema irá exibi-lo nos orçamentos para pagamento instantâneo.</li>
+                </ul>
+            </section>
+
+            <section class="mt-20 border-t border-slate-200 pt-8 text-center text-slate-400 text-sm pb-12">
+                <p>&copy; 2026 OrçaFácil. Todos os direitos reservados.</p>
+            </section>
+        </div>
+    </main>
+    <script>
+        // Smooth scroll spy logic could go here, but simple CSS scroll-behavior works for now
+    </script>
+</body>
+
+</html>

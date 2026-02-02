@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrçaFácil • Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        main {
+            padding-bottom: 120px;
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-enter {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .delay-100 {
+            animation-delay: 100ms;
+        }
+
+        .delay-200 {
+            animation-delay: 200ms;
+        }
+
+        .delay-300 {
+            animation-delay: 300ms;
+        }
+
+        .hover-scale {
+            transition: transform 0.2s;
+        }
+
+        .hover-scale:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="bg-[#F8FAFC] text-slate-800">
+
+    <main class="min-h-screen p-6 md:p-10 max-w-7xl mx-auto pb-40">
+
+        <!-- Banner de Alerta - Configuração Pendente -->
+        <div id="banner-config-pendente"
+            class="hidden mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex flex-col md:flex-row gap-4 items-start md:items-center justify-between animate-enter">
+            <div class="flex items-start gap-3">
+                <div class="bg-amber-100 text-amber-600 p-2 rounded-lg">
+                    <i class="ph-bold ph-warning text-xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-amber-800 text-sm">Complete o registo da sua empresa!</p>
+                    <p class="text-amber-700 text-xs mt-0.5">Configure os dados que aparecerão nos seus orçamentos
+                        (nome, CNPJ, telefone, etc.)</p>
+                </div>
+            </div>
+            <a href="ajustes.html"
+                class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap">
+                <i class="ph-bold ph-gear"></i> Configurar Agora
+            </a>
+        </div>
+
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 animate-enter">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-900">
+                    <span id="saudacao-tempo">Olá</span>, <span id="user-name-display"
+                        class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Utilizador</span>!
+                    👋
+                </h1>
+                <p class="text-slate-500 mt-1" id="frase-motivacional">Vamos fazer grandes negócios hoje? 🚀</p>
+            </div>
+
+        </header>
+
+        <!-- Wrapper para Reordenar no Mobile -->
+        <div class="flex flex-col lg:block">
+            <!-- KPI Section -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 order-last lg:order-none">
+
+                <div
+                    class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-blue-500/5 hover-scale animate-enter delay-100 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="ph-duotone ph-file-text text-6xl text-blue-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 font-bold mb-1">Total de Orçamentos</p>
+                    <h3 id="kpi-total" class="text-4xl font-bold text-slate-900">0</h3>
+                    <div
+                        class="mt-4 flex items-center gap-2 text-xs font-bold text-blue-600 bg-blue-50 w-fit px-2 py-1 rounded">
+                        <i class="ph-bold ph-trend-up"></i> GERAL
+                    </div>
+                </div>
+
+                <div
+                    class="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-xl shadow-blue-600/20 hover-scale animate-enter delay-200 relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 opacity-20">
+                        <i class="ph-fill ph-currency-dollar text-9xl"></i>
+                    </div>
+                    <p class="text-sm font-medium mb-1 text-blue-100">Receita Aprovada</p>
+                    <h3 id="kpi-faturado" class="text-3xl md:text-4xl font-bold">€ 0,00</h3>
+                    <p class="text-xs text-blue-200 mt-2 opacity-80">Valor total de orçamentos fechados.</p>
+                </div>
+
+                <div
+                    class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-green-500/5 hover-scale animate-enter delay-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="ph-duotone ph-check-circle text-6xl text-green-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 font-bold mb-1">Aprovados</p>
+                    <h3 id="kpi-aprovado" class="text-4xl font-bold text-slate-900">0</h3>
+                    <div
+                        class="mt-4 flex items-center gap-2 text-xs font-bold text-green-600 bg-green-50 w-fit px-2 py-1 rounded">
+                        <i class="ph-bold ph-check"></i> SUCESSO
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-orange-500/5 hover-scale animate-enter delay-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="ph-duotone ph-clock text-6xl text-orange-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 font-bold mb-1">Pendentes</p>
+                    <h3 id="kpi-pendente" class="text-4xl font-bold text-slate-900">0</h3>
+                    <div
+                        class="mt-4 flex items-center gap-2 text-xs font-bold text-orange-600 bg-orange-50 w-fit px-2 py-1 rounded">
+                        <i class="ph-bold ph-hourglass"></i> AGUARDANDO
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Metas -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10 animate-enter delay-200">
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm col-span-1 lg:col-span-2">
+                    <h2 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                        <i class="ph-duotone ph-target text-blue-600"></i> Metas do Mês
+                    </h2>
+
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="font-bold text-slate-700">Conversão de Orçamentos</span>
+                                <span class="text-blue-600 font-bold" id="meta-conversao-text">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div id="bar-conversao"
+                                    class="bg-blue-600 h-3 rounded-full transition-all duration-1000 ease-out"
+                                    style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Taxa de orçamentos aprovados vs total.</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="font-bold text-slate-700">Preenchimento de Registo</span>
+                                <span id="cadastro-percent" class="text-amber-600 font-bold">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                <div id="bar-cadastro"
+                                    class="bg-amber-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                                    style="width: 0%"></div>
+                            </div>
+                            <p id="cadastro-msg" class="text-xs text-slate-400 mt-1">
+                                <a href="ajustes.html" class="text-blue-600 hover:underline">Configure os dados da sua
+                                    empresa →</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Rápidos -->
+                <div class="grid grid-cols-1 gap-4">
+                    <div
+                        class="bg-white p-5 rounded-2xl border border-slate-100 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
+                        <div class="bg-purple-50 text-purple-600 p-3 rounded-xl">
+                            <i class="ph-bold ph-users text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase">Clientes Ativos</p>
+                            <h3 id="kpi-clientes" class="text-2xl font-bold text-slate-900">0</h3>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-white p-5 rounded-2xl border border-slate-100 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
+                        <div class="bg-pink-50 text-pink-600 p-3 rounded-xl">
+                            <i class="ph-bold ph-cube text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-500 uppercase">Produtos/Serviços</p>
+                            <h3 id="kpi-itens-dash" class="text-2xl font-bold text-slate-900">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Ações e Recentes -->
+            <section class="grid grid-cols-1 lg:grid-cols-5 gap-8 animate-enter delay-300 order-first mb-10 lg:mb-0">
+
+                <div class="lg:col-span-2 space-y-6">
+                    <h2 class="text-lg font-bold text-slate-900">Ações Rápidas</h2>
+
+                    <a href="criar-orcamento.html"
+                        class="group block w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex justify-center items-center gap-2 transform active:scale-95">
+                        <i class="ph-bold ph-plus group-hover:rotate-90 transition-transform"></i> Novo Orçamento
+                    </a>
+
+                    <div
+                        class="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-100 overflow-hidden shadow-sm">
+                        <a href="criar-item.html"
+                            class="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-slate-700 font-medium group">
+                            <div
+                                class="bg-slate-100 p-2 rounded-lg text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                                <i class="ph-bold ph-cube"></i>
+                            </div>
+                            Criar Item
+                            <i class="ph-bold ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500"></i>
+                        </a>
+                        <a href="clientes.html"
+                            class="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-slate-700 font-medium group">
+                            <div
+                                class="bg-slate-100 p-2 rounded-lg text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                                <i class="ph-bold ph-user-plus"></i>
+                            </div>
+                            Adicionar Cliente
+                            <i class="ph-bold ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500"></i>
+                        </a>
+                        <a href="catalogo.html"
+                            class="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-slate-700 font-medium group">
+                            <div
+                                class="bg-slate-100 p-2 rounded-lg text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                                <i class="ph-bold ph-book-bookmark"></i>
+                            </div>
+                            Ver Catálogo
+                            <i class="ph-bold ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3 space-y-6">
+                    <h2 class="text-lg font-bold text-slate-900 flex justify-between items-center">
+                        Recentes
+                        <a href="orcamentos.html" class="text-xs font-bold text-blue-600 hover:text-blue-800">Ver
+                            Todos</a>
+                    </h2>
+
+                    <div class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm min-h-[300px]">
+                        <ul id="lista-orcamentos-recentes" class="divide-y divide-slate-50">
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        <!-- Spacer para garantir scroll final -->
+        <div class="h-32 w-full"></div>
+    </main>
+
+    <!-- Nav Bar -->
+    <nav
+        class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border border-slate-200 rounded-full shadow-2xl p-2 flex items-center gap-1 z-50 whitespace-nowrap scale-90 md:scale-100 transition-all origin-bottom">
+        <a href="dashboard.html"
+            class="flex items-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-full font-bold text-sm transition-all shadow-blue-500/20 shadow-lg">
+            <i class="ph-bold ph-house text-xl"></i> <span class="hidden md:block">Dashboard</span>
+        </a>
+        <a href="orcamentos.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-file-text text-xl"></i> <span class="hidden md:block">Orçamentos</span>
+        </a>
+        <a href="criar-orcamento.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-plus text-xl"></i> <span class="hidden md:block">Novo</span>
+        </a>
+        <a href="clientes.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-users text-xl"></i> <span class="hidden md:block">Clientes</span>
+        </a>
+        <a href="catalogo.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-cube text-xl"></i> <span class="hidden md:block">Itens</span>
+        </a>
+        <a href="ajustes.html"
+            class="flex items-center gap-2 px-4 py-3 text-slate-500 hover:bg-slate-100 rounded-full font-medium text-sm transition-all hover:text-blue-600">
+            <i class="ph-bold ph-gear text-xl"></i> <span class="hidden md:block">Config</span>
+        </a>
+    </nav>
+
+    <!-- Versão com timestamp para evitar cache -->
+    <script src="app.js?v=1002"></script>
+</body>
+
+</html>
