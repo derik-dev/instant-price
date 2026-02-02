@@ -54,7 +54,6 @@
         <div class="bg-white w-full max-w-4xl p-8 rounded-xl shadow-xl shadow-slate-200/60 border border-slate-100">
             <form id="form-criar-completo" class="space-y-8">
                 <!-- Seção Cliente -->
-                <!-- Seção Cliente (Redesenhada & Otimizada) -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-6">
                     <div
                         class="p-5 md:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100">
@@ -94,10 +93,16 @@
                             <div class="md:col-span-2 flex justify-between items-center mb-2">
                                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Dados do
                                     Cliente & Orçamento</span>
-                                <button type="button" onclick="limparCamposCliente()"
-                                    class="text-[10px] font-bold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1">
-                                    <i class="ph-bold ph-eraser"></i> Limpar
-                                </button>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="novoCliente()"
+                                        class="text-[10px] font-bold text-green-600 hover:text-green-800 transition-colors flex items-center gap-1">
+                                        <i class="ph-bold ph-plus-circle"></i> Novo Cliente
+                                    </button>
+                                    <button type="button" onclick="limparCamposCliente()"
+                                        class="text-[10px] font-bold text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1">
+                                        <i class="ph-bold ph-eraser"></i> Limpar
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Nome e Data Validade lado a lado em desktop -->
@@ -124,7 +129,7 @@
                             <input type="email" id="novo-cli-email" placeholder="E-mail"
                                 class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
 
-                            <input type="text" id="novo-cli-cpf" placeholder="NIF (Opcional)"
+                            <input type="text" id="novo-cli-cpf" placeholder="NIF OU NIPC (Opcional)"
                                 class="px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
 
                             <input type="text" id="novo-cli-empresa" placeholder="Empresa / Loja"
@@ -134,12 +139,9 @@
                                 class="col-span-1 md:col-span-2 px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all">
                         </div>
                     </div>
-
-
                 </div>
 
                 <!-- Seção Itens -->
-                <!-- Seção Itens (Redesenhada & Otimizada) -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-5 md:p-6 border-b border-slate-100 bg-slate-50/50">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
@@ -276,206 +278,34 @@
                         <div class="flex justify-between items-center pt-2">
                             <div class="flex flex-col pl-1">
                                 <span
-                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none">TOTAL</span>
-                                <span
-                                    class="text-xs font-bold text-slate-800 uppercase tracking-wider leading-none mt-0.5">CALCULADO</span>
+                                    class="text-sm font-black uppercase text-black">Total</span>
                             </div>
-                            <span class="text-2xl font-bold text-blue-600 pr-1 tracking-tight"
-                                id="subtotal-display">--</span>
+                            <span id="orc-valor" class="text-2xl font-black text-blue-600">€ 0,00</span>
                         </div>
                     </div>
                 </div>
-                <textarea id="input-descricao" class="hidden"></textarea>
+
+                <!-- Botões de Ação -->
+                <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                    <button type="button" onclick="salvarOrcamentoCompleto()"
+                        class="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex justify-center items-center gap-2.5">
+                        <i class="ph-bold ph-floppy-disk text-xl"></i> <span>Guardar e Gerar</span>
+                    </button>
+                    <button type="button" onclick="window.history.back()"
+                        class="w-full sm:w-auto px-8 py-3.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 shadow-sm">
+                        Cancelar
+                    </button>
+                </div>
+
+                <!-- Campos ocultos para processamento -->
+                <input type="hidden" id="input-valor" value="0">
+                <input type="hidden" id="input-descricao" value="">
                 <input type="hidden" id="input-mao-obra-total" value="0">
-                <input type="hidden" id="input-itens-json">
-        </div>
-
-        <!-- Seção Pagamento e Valores Redesenhada -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-
-            <!-- Coluna 1: Valor e Detalhes -->
-            <div class="space-y-6">
-
-                <!-- Box de Valor Principal -->
-                <div class="bg-blue-50 p-5 rounded-xl border border-blue-100 shadow-sm">
-                    <label class="block text-xs font-bold text-blue-900 mb-3 uppercase flex items-center gap-1">
-                        <i class="ph-bold ph-currency-dollar"></i> Valor Total do Orçamento
-                    </label>
-
-                    <div class="flex gap-3">
-                        <!-- Seletor de Moeda removido conforme solicitação -->
-
-
-                        <!-- Input de Valor -->
-                        <div class="flex-1 relative">
-                            <span id="currency-symbol"
-                                class="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600 font-bold text-lg select-none">€</span>
-                            <input type="text" inputmode="decimal" id="input-valor" placeholder="0,00"
-                                class="w-full pl-12 pr-4 py-3.5 bg-white border border-blue-200 rounded-lg text-blue-700 font-bold text-xl focus:outline-none focus:border-blue-500 ring-4 ring-blue-500/5 transition-all shadow-sm">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Prazo -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase">Prazo de Entrega
-                        (Dias)</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                            <i class="ph-bold ph-calendar-check text-lg"></i>
-                        </span>
-                        <input type="number" id="input-prazo" placeholder="Ex: 15"
-                            class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all font-medium">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Coluna 2: Formas de Pagamento -->
-            <div class="bg-white p-6 rounded-xl border border-slate-200 h-fit shadow-sm">
-                <h3 class="text-sm font-bold text-slate-800 uppercase mb-4 flex items-center gap-2">
-                    <i class="ph-bold ph-wallet text-slate-500"></i> Condições de Pagamento
-                </h3>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase">Descreva como será o
-                        pagamento</label>
-                    <textarea id="select-pagamento" rows="4"
-                        placeholder="Ex: 50% de entrada e restante na entrega, com 5% de desconto..."
-                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-all font-medium text-sm resize-none"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="pt-8 flex flex-col-reverse sm:flex-row gap-4 border-t border-slate-100">
-            <button type="button" onclick="history.back()"
-                class="w-full sm:w-auto px-8 py-3.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 shadow-sm">
-                Cancelar
-            </button>
-            <button type="button" onclick="salvarOrcamentoCompleto()"
-                class="w-full sm:flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-blue-500/25 active:scale-[0.98] transition-all flex justify-center items-center gap-2.5">
-                <i class="ph-bold ph-floppy-disk text-xl"></i> <span>Guardar e Gerar</span>
-            </button>
-        </div>
-        </form>
+                <input type="hidden" id="input-itens-json" value="[]">
+                <input type="hidden" id="subtotal-display" value="€ 0,00">
+            </form>
         </div>
     </main>
-
-    <!-- Modal Seleção de Itens (Redesenhado) -->
-    <div id="modal-selecao-item" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="fecharModalItens()">
-        </div>
-        <div
-            class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh] animate-scale-in overflow-hidden">
-
-            <!-- Header -->
-            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white z-10">
-                <h3 class="font-bold text-lg text-slate-800">Adicionar Item</h3>
-                <button onclick="fecharModalItens()" class="text-slate-400 hover:text-slate-600 transition-colors">
-                    <i class="ph-bold ph-x text-lg"></i>
-                </button>
-            </div>
-
-            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-slate-50/50">
-
-                <!-- Busca -->
-                <div class="relative mb-4">
-                    <i class="ph-bold ph-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-lg"></i>
-                    <input type="text" id="busca-item-modal" onkeyup="filtrarItensModal()"
-                        placeholder="Buscar produto ou serviço..."
-                        class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 shadow-sm text-sm transition-all">
-                </div>
-
-                <!-- Toggle Form Link -->
-                <div class="flex justify-between items-center mb-4 px-1">
-                    <button type="button" onclick="toggleNovoItem()" id="btn-novo-item-text"
-                        class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors">
-                        <i class="ph-bold ph-plus-circle"></i> Registar Novo Item
-                    </button>
-                    <button type="button" onclick="recarregarItensModal()"
-                        class="text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors">
-                        <i class="ph-bold ph-arrows-clockwise"></i> Atualizar
-                    </button>
-                </div>
-
-                <!-- Form Cadastro Rápido (Estilo Green) -->
-                <div id="form-novo-item"
-                    class="hidden mb-6 bg-green-50/50 border border-green-100 rounded-xl p-5 animate-fade-in-down">
-                    <p class="text-[10px] font-bold text-green-700 uppercase tracking-wider mb-3">Registo Rápido de
-                        Item</p>
-
-                    <div class="space-y-3">
-                        <input type="text" id="novo-item-nome" placeholder="Nome do item *"
-                            class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400 font-medium">
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="relative">
-                                <select id="novo-item-tipo" onchange="toggleNovoItemTipo()"
-                                    class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 appearance-none font-bold text-slate-600 cursor-pointer shadow-sm disabled:opacity-50">
-                                    <option value="Serviço">Serviço</option>
-                                    <option value="Produto">Produto</option>
-                                </select>
-                                <div
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                    <i class="ph-bold ph-caret-down"></i>
-                                </div>
-                            </div>
-                            <div class="relative">
-                                <span
-                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">€</span>
-                                <input type="text" inputmode="decimal" id="novo-item-preco" placeholder="Preço *"
-                                    class="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400 font-bold text-slate-700">
-                            </div>
-                        </div>
-
-                        <!-- Campos Dinâmicos Compactos -->
-                        <div id="novo-box-mao-obra" class="w-full">
-                            <label class="text-[10px] font-bold text-green-700 uppercase mb-1 ml-1 block">Custo Mão de
-                                Obra</label>
-                            <div class="relative">
-                                <span
-                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">€</span>
-                                <input type="text" inputmode="decimal" id="novo-item-mao-obra" placeholder="0,00"
-                                    class="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
-                            </div>
-                        </div>
-                        <div id="novo-box-frete" class="w-full hidden">
-                            <label class="text-[10px] font-bold text-green-700 uppercase mb-1 ml-1 block">Custo
-                                Frete</label>
-                            <div class="relative">
-                                <span
-                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">€</span>
-                                <input type="text" inputmode="decimal" id="novo-item-frete" placeholder="0,00"
-                                    class="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400">
-                            </div>
-                        </div>
-
-                        <div>
-                            <textarea id="novo-item-descricao" placeholder="Descrição detalhada do item (Opcional)"
-                                rows="3"
-                                class="w-full px-4 py-2.5 text-sm bg-white border border-green-200/60 rounded-lg focus:outline-none focus:border-green-500 shadow-sm placeholder:text-slate-400 resize-none"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3 pt-4">
-                        <button type="button" onclick="salvarItemRapido()"
-                            class="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition-all shadow-lg shadow-green-500/20 active:scale-[0.98] flex items-center justify-center gap-2">
-                            <i class="ph-bold ph-check"></i> Guardar e Adicionar
-                        </button>
-                        <button type="button" onclick="toggleNovoItem()"
-                            class="px-4 py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors">
-                            Cancelar
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Lista de Itens -->
-                <ul id="lista-itens-disponiveis" class="space-y-3 pb-4">
-                    <li class="p-8 text-center text-slate-400 flex flex-col items-center">
-                        <i class="ph-bold ph-spinner animate-spin text-2xl mb-2"></i> A carregar catálogo...
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
 
     <!-- Navegação Inferior Premium -->
     <nav
@@ -506,126 +336,420 @@
         </a>
     </nav>
 
+    <!-- Modal Cliente -->
+    <div id="modal-cliente" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <form id="form-cliente" class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="w-full">
+                            <h3 id="modal-cliente-titulo" class="text-lg leading-6 font-medium text-gray-900">Novo Cliente</h3>
+                            <div class="mt-6 grid grid-cols-1 gap-4">
+                                <input type="hidden" id="cli-id">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Nome *</label>
+                                    <input type="text" id="cli-nome" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                                    <input type="email" id="cli-email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Telefone</label>
+                                    <input type="tel" id="cli-phone" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Empresa</label>
+                                    <input type="text" id="cli-empresa" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">NIF</label>
+                                    <input type="text" id="cli-cpf" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Endereço</label>
+                                    <input type="text" id="cli-endereco" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 sm:mt-6 sm:flex sm:flex-row-reverse">
+                        <button type="button" onclick="salvarCliente()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <i class="ph-bold ph-check"></i> Guardar Cliente
+                        </button>
+                        <button type="button" onclick="toggleModal('modal-cliente', 'close')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js?v=2025-01-29-EURO-FIX"></script>
     <script>
-        let itensOrcamento = [];
-        let itensCatalogo = [];
+        // Carregar itens do catálogo no select
+        document.addEventListener('DOMContentLoaded', async function() {
+            await carregarItensInline();
+            await carregarSelectClientes();
+            
+            // Definir data de hoje automaticamente
+            const dataInput = document.getElementById('input-validade');
+            if (dataInput) {
+                const hoje = new Date().toISOString().split('T')[0];
+                dataInput.value = hoje;
+            }
+        });
 
-        // Lógica de manipulação de itens
-        function carregarItensModal() {
-            const ul = document.getElementById('lista-itens-disponiveis');
-            // Elemento 'sb' vem do app.js que carrega globalmente (após DOMContentLoaded, mas onclick pode chamar depois)
-            // Para garantir: verifica se sb existe. Se não, espera ou tenta pegar de window.supabase
-            if (!window.supabase && !sb) return ul.innerHTML = '<li class="p-4 text-center text-red-400">Erro: Conexão DB.</li>';
+        // Função para abrir modal de novo cliente
+        function novoCliente() {
+            const form = document.getElementById('form-cliente');
+            if (form) form.reset();
+            document.getElementById('cli-id').value = '';
+            document.getElementById('modal-cliente-titulo').innerText = 'Novo Cliente';
+            const btn = document.querySelector('button[onclick="salvarCliente()"]');
+            if (btn) btn.innerHTML = '<i class="ph-bold ph-check"></i> Guardar Cliente';
+            toggleModal('modal-cliente', 'open');
+        }
 
-            // Reutiliza função do app.js se possível, mas aqui é lógica local de UI
-            // Vamos fazer a query direta pro supabase caso app.js já tenha inicializado 'sb'
-            if (itensCatalogo.length > 0) { renderizarListaModal(itensCatalogo); return; }
+        async function carregarItensInline() {
+            const select = document.getElementById('select-item-inline');
+            if (!select) return;
+            
+            try {
+                const { data: itens } = await sb.from('itens').select('*').order('nome');
+                select.innerHTML = '<option value="">Selecione um item do catálogo...</option>';
+                
+                if (itens && itens.length > 0) {
+                    itens.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.innerText = `${item.nome} - ${formatarMoeda(item.preco)}`;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar itens:', error);
+            }
+        }
 
-            const fetchItens = async () => {
-                const { data } = await sb.from('itens').select('*').order('nome');
-                itensCatalogo = data || [];
-                renderizarListaModal(itensCatalogo);
+        // Carregar clientes no select
+        async function carregarSelectClientes() {
+            const select = document.getElementById('select-cliente');
+            if (!select) return;
+            
+            try {
+                const { data: clientes } = await sb.from('clientes').select('*').order('nome');
+                select.innerHTML = '<option value="">Selecione para preencher...</option>';
+                
+                if (clientes && clientes.length > 0) {
+                    clientes.forEach(cliente => {
+                        const option = document.createElement('option');
+                        option.value = cliente.id;
+                        option.innerText = cliente.nome;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar clientes:', error);
+            }
+        }
+
+        // Preencher campos quando selecionar cliente
+        async function preencherDadosCliente() {
+            const select = document.getElementById('select-cliente');
+            const clienteId = select.value;
+            
+            if (!clienteId) {
+                // Limpar campos
+                limparCamposCliente();
+                return;
+            }
+            
+            try {
+                const { data: cliente, error } = await sb.from('clientes').select('*').eq('id', clienteId).single();
+                if (error) throw error;
+                
+                if (cliente) {
+                    document.getElementById('novo-cli-nome').value = cliente.nome || '';
+                    document.getElementById('novo-cli-email').value = cliente.email || '';
+                    document.getElementById('novo-cli-phone').value = cliente.phone || '';
+                    document.getElementById('novo-cli-cpf').value = cliente.cpf || '';
+                    document.getElementById('novo-cli-empresa').value = cliente.empresa || '';
+                    document.getElementById('novo-cli-endereco').value = cliente.endereco || '';
+                    // Manter a data de hoje, não sobrescrever com valor do cliente
+                    // document.getElementById('input-validade').value = cliente.validade_orcamento || '';
+                }
+            } catch (error) {
+                console.error('Erro ao buscar cliente:', error);
+            }
+        }
+
+        // Salvar cliente automaticamente se for novo
+        async function salvarClienteSeNovo() {
+            const nome = document.getElementById('novo-cli-nome').value.trim();
+            const email = document.getElementById('novo-cli-email').value.trim();
+            const telefone = document.getElementById('novo-cli-phone').value.trim();
+            const nif = document.getElementById('novo-cli-cpf').value.trim();
+            const empresa = document.getElementById('novo-cli-empresa').value.trim();
+            const endereco = document.getElementById('novo-cli-endereco').value.trim();
+            const validade = document.getElementById('input-validade').value;
+            const selectCliente = document.getElementById('select-cliente').value;
+            
+            // Se já tem cliente selecionado, não salva
+            if (selectCliente) return selectCliente;
+            
+            // Se não tem nome, não salva
+            if (!nome) return null;
+            
+            try {
+                const { data: { user } } = await sb.auth.getUser();
+                if (!user) throw new Error("Usuário não logado");
+                
+                // Verificar se cliente já existe pelo nome
+                const { data: clienteExistente } = await sb.from('clientes')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .eq('nome', nome)
+                    .single();
+                
+                if (clienteExistente) {
+                    // Cliente já existe, usar ele
+                    document.getElementById('select-cliente').value = clienteExistente.id;
+                    return clienteExistente.id;
+                }
+                
+                // Salvar novo cliente
+                const payload = {
+                    user_id: user.id,
+                    nome,
+                    email,
+                    phone: telefone,
+                    cpf: nif,
+                    empresa,
+                    endereco,
+                    validade_orcamento: validade
+                };
+                
+                const { data, error } = await sb.from('clientes').insert([payload]).select();
+                if (error) throw error;
+                
+                if (data && data.length > 0) {
+                    console.log('Cliente salvo:', data[0]);
+                    
+                    // Recarregar o select para incluir o novo cliente
+                    await carregarSelectClientes();
+                    
+                    // Selecionar o novo cliente no select
+                    document.getElementById('select-cliente').value = data[0].id;
+                    
+                    return data[0].id;
+                }
+            } catch (error) {
+                console.error('Erro ao salvar cliente:', error);
+                // Não mostra alert para não atrapalhar o fluxo
+                return null;
+            }
+            
+            return null;
+        }
+
+        // Limpar campos do cliente
+        function limparCamposCliente() {
+            document.getElementById('novo-cli-nome').value = '';
+            document.getElementById('novo-cli-email').value = '';
+            document.getElementById('novo-cli-phone').value = '';
+            document.getElementById('novo-cli-cpf').value = '';
+            document.getElementById('novo-cli-empresa').value = '';
+            document.getElementById('novo-cli-endereco').value = '';
+            document.getElementById('select-cliente').value = '';
+            // Manter a data de hoje, não limpar o campo
+            // document.getElementById('input-validade').value = '';
+            
+            // Restaurar data de hoje se necessário
+            const dataInput = document.getElementById('input-validade');
+            if (dataInput && !dataInput.value) {
+                const hoje = new Date().toISOString().split('T')[0];
+                dataInput.value = hoje;
+            }
+        }
+
+        // Preencher campos quando selecionar item do catálogo
+        function preencherItemInline() {
+            const select = document.getElementById('select-item-inline');
+            const itemId = select.value;
+            
+            if (!itemId) {
+                // Limpar campos
+                document.getElementById('inline-nome').value = '';
+                document.getElementById('inline-preco').value = '';
+                document.getElementById('inline-descricao').value = '';
+                document.getElementById('inline-tipo').value = 'Serviço';
+                toggleInlineTipo();
+                return;
+            }
+            
+            // Buscar item completo do banco
+            sb.from('itens').select('*').eq('id', itemId).single()
+                .then(({ data, error }) => {
+                    if (error) throw error;
+                    if (data) {
+                        document.getElementById('inline-nome').value = data.nome;
+                        document.getElementById('inline-preco').value = data.preco.toFixed(2).replace('.', ',');
+                        document.getElementById('inline-descricao').value = data.descricao || '';
+                        document.getElementById('inline-tipo').value = data.tipo || 'Serviço';
+                        toggleInlineTipo();
+                        
+                        // Preencher mão de obra ou frete
+                        if (data.tipo === 'Serviço') {
+                            document.getElementById('inline-mao-obra').value = (data.mao_de_obra || 0).toFixed(2).replace('.', ',');
+                        } else {
+                            document.getElementById('inline-frete').value = (data.frete || 0).toFixed(2).replace('.', ',');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar item:', error);
+                });
+        }
+
+        // Adicionar item (salva no catálogo se for novo)
+        async function adicionarItemInline() {
+            const nome = document.getElementById('inline-nome').value.trim();
+            const descricao = document.getElementById('inline-descricao').value.trim();
+            const precoStr = document.getElementById('inline-preco').value.replace('€', '').trim().replace(',', '.');
+            const tipo = document.getElementById('inline-tipo').value;
+            const selectItem = document.getElementById('select-item-inline').value;
+            
+            const preco = parseFloat(precoStr) || 0;
+            
+            if (!nome || preco <= 0) {
+                alert('Preencha o nome e o preço do item!');
+                return;
+            }
+            
+            let mao_de_obra = 0;
+            let frete = 0;
+            
+            if (tipo === 'Serviço') {
+                const moStr = document.getElementById('inline-mao-obra').value.replace('€', '').trim().replace(',', '.');
+                mao_de_obra = parseFloat(moStr) || 0;
+            } else {
+                const freteStr = document.getElementById('inline-frete').value.replace('€', '').trim().replace(',', '.');
+                frete = parseFloat(freteStr) || 0;
+            }
+            
+            let itemId = selectItem;
+            
+            // Se não for um item do catálogo, salvar no banco primeiro
+            if (!selectItem) {
+                try {
+                    const { data: { user } } = await sb.auth.getUser();
+                    if (!user) throw new Error("Usuário não logado");
+                    
+                    const payload = {
+                        user_id: user.id,
+                        nome,
+                        tipo,
+                        preco,
+                        mao_de_obra,
+                        frete,
+                        descricao
+                    };
+                    
+                    const { data, error } = await sb.from('itens').insert([payload]).select();
+                    if (error) throw error;
+                    
+                    if (data && data.length > 0) {
+                        itemId = data[0].id;
+                        console.log('Item salvo no catálogo:', data[0]);
+                        
+                        // Recarregar o select para incluir o novo item
+                        await carregarItensInline();
+                        
+                        // Selecionar o novo item no select
+                        document.getElementById('select-item-inline').value = itemId;
+                    }
+                } catch (error) {
+                    console.error('Erro ao salvar item no catálogo:', error);
+                    alert('Erro ao salvar item no catálogo: ' + error.message);
+                    return;
+                }
+            }
+            
+            // Adicionar ao orçamento
+            const item = {
+                id: itemId,
+                nome,
+                descricao,
+                preco,
+                tipo,
+                qtd: 1,
+                mao_de_obra,
+                frete
             };
-            fetchItens();
-        }
-
-        function renderizarListaModal(lista) {
-            const ul = document.getElementById('lista-itens-disponiveis');
-            ul.innerHTML = '';
-            if (lista.length === 0) { ul.innerHTML = '<li class="p-8 text-center text-slate-400 flex flex-col items-center"><i class="ph-duotone ph-magnifying-glass text-2xl mb-2 opacity-50"></i> Nenhum item encontrado.</li>'; return; }
-
-            lista.forEach(item => {
-                const li = document.createElement('li');
-                li.className = 'p-3 hover:bg-slate-50 border border-slate-100 rounded-lg cursor-pointer flex justify-between items-center group transition-all';
-                li.onclick = () => selecionarItem(item);
-
-                const precoFormatado = formatarMoeda(item.preco);
-
-                li.innerHTML = `
-                    <div class="flex flex-col">
-                        <span class="font-bold text-slate-800 text-sm group-hover:text-blue-700 transition-colors">${item.nome}</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">${item.tipo || 'Item'}</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="block font-bold text-slate-900 text-sm">${precoFormatado}</span>
-                        <span class="text-[10px] text-blue-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity flex justify-end items-center gap-1">
-                            Adicionar <i class="ph-bold ph-plus"></i>
-                        </span>
-                    </div>`;
-                ul.appendChild(li);
-            });
-        }
-
-
-        function selecionarItem(item) {
-            // Clona e adiciona default qtd 1
-            const novo = { ...item, qtd: 1 };
-            itensOrcamento.push(novo);
+            
+            // Verificar se já existe um array de itens
+            if (!window.itensOrcamento) {
+                window.itensOrcamento = [];
+            }
+            
+            window.itensOrcamento.push(item);
             atualizarTabelaItens();
-            fecharModalItens();
-            const btn = document.querySelector('button[onclick="abrirModalItens()"]');
-            btn.innerHTML = `<i class="ph-bold ph-check"></i> Item Adicionado`;
-            setTimeout(() => { btn.innerHTML = `<i class="ph-bold ph-plus"></i> Adicionar Item`; }, 1000);
+            
+            // Limpar campos
+            document.getElementById('inline-nome').value = '';
+            document.getElementById('inline-preco').value = '';
+            document.getElementById('inline-descricao').value = '';
+            document.getElementById('inline-mao-obra').value = '';
+            document.getElementById('inline-frete').value = '';
+            document.getElementById('select-item-inline').value = '';
+            document.getElementById('inline-tipo').value = 'Serviço';
+            toggleInlineTipo();
         }
 
-        function removerItemOrcamento(index) {
-            itensOrcamento.splice(index, 1);
-            atualizarTabelaItens();
-        }
-
-        function atualizarQuantidade(index, novaQtd) {
-            let qtd = parseInt(novaQtd);
-            if (isNaN(qtd) || qtd < 1) qtd = 1;
-            itensOrcamento[index].qtd = qtd;
-            atualizarTabelaItens();
-        }
-
+        // Atualizar tabela de itens (função auxiliar)
         function atualizarTabelaItens() {
             const tbody = document.getElementById('lista-itens-orcamento');
-            const empty = document.getElementById('empty-itens');
-            const totalDisplay = document.getElementById('subtotal-display');
+            const emptyState = document.getElementById('empty-itens');
+            const totalDisplay = document.getElementById('orc-valor');
             const subtotalProdutos = document.getElementById('subtotal-produtos');
             const subtotalMaoObra = document.getElementById('subtotal-mao-obra');
             const subtotalFrete = document.getElementById('subtotal-frete');
-
             const inputValor = document.getElementById('input-valor');
-            const inputDesc = document.getElementById('input-descricao');
-            const inputMaoObraTotal = document.getElementById('input-mao-obra-total');
-            const inputJson = document.getElementById('input-itens-json');
-
+            const inputItensJson = document.getElementById('input-itens-json');
+            
+            if (!tbody || !window.itensOrcamento) return;
+            
             tbody.innerHTML = '';
             let totalProd = 0;
             let totalMO = 0;
             let totalFrete = 0;
-            let descricaoTexto = '';
-
-            if (itensOrcamento.length === 0) { empty.classList.remove('hidden'); }
-            else {
-                empty.classList.add('hidden');
-                itensOrcamento.forEach((item, index) => {
+            
+            if (window.itensOrcamento.length === 0) {
+                if (emptyState) emptyState.style.display = 'flex';
+            } else {
+                if (emptyState) emptyState.style.display = 'none';
+                
+                window.itensOrcamento.forEach((item, index) => {
                     const qtd = item.qtd || 1;
                     const preco = Number(item.preco) || 0;
-                    const maoObra = Number(item.mao_de_obra) || 0;
+                    const mo = Number(item.mao_de_obra) || 0;
                     const frete = Number(item.frete) || 0;
-
+                    
                     const subProd = preco * qtd;
-                    const subMO = maoObra * qtd;
+                    const subMO = mo * qtd;
                     const subFrete = frete * qtd;
-
+                    const valorTotalItem = subProd + subMO + subFrete;
+                    
                     totalProd += subProd;
                     totalMO += subMO;
                     totalFrete += subFrete;
-
-                    const valorTotalItem = subProd + subMO + subFrete;
-
-                    descricaoTexto += `• ${item.nome}`;
-                    if (item.preco > 0) descricaoTexto += ` - ${formatarMoeda(subProd)}`;
-                    if (subMO > 0) descricaoTexto += ` + M.O: ${formatarMoeda(subMO)}`;
-                    if (subFrete > 0) descricaoTexto += ` + Frete: ${formatarMoeda(subFrete)}`;
-                    if (item.descricao) descricaoTexto += `\n  (${item.descricao})`;
-                    descricaoTexto += '\n';
-
+                    
                     tbody.innerHTML += `
                     <tr class="group hover:bg-slate-50 border-b border-slate-50 last:border-0">
                         <td class="p-3 pl-5">
@@ -643,368 +767,34 @@
                     </tr>`;
                 });
             }
-
+            
             const total = totalProd + totalMO + totalFrete;
-
-            // Atualiza displays com moeda correta
-            subtotalProdutos.innerText = formatarMoeda(totalProd);
-            subtotalMaoObra.innerText = formatarMoeda(totalMO);
+            
+            // Atualizar displays
+            if (subtotalProdutos) subtotalProdutos.innerText = formatarMoeda(totalProd);
+            if (subtotalMaoObra) subtotalMaoObra.innerText = formatarMoeda(totalMO);
             if (subtotalFrete) subtotalFrete.innerText = formatarMoeda(totalFrete);
-            totalDisplay.innerText = formatarMoeda(total);
-
-            // Campos ocultos para salvar
-            inputValor.value = total.toFixed(2).replace('.', ',');
-            inputMaoObraTotal.value = totalMO.toFixed(2);
-            inputDesc.value = descricaoTexto.trim();
-            inputJson.value = JSON.stringify(itensOrcamento);
+            if (totalDisplay) totalDisplay.innerText = formatarMoeda(total);
+            
+            // Atualizar campos ocultos
+            if (inputValor) inputValor.value = total.toFixed(2).replace('.', ',');
+            if (inputItensJson) inputItensJson.value = JSON.stringify(window.itensOrcamento);
         }
 
-        // ===================================
-        // FUNÇÕES LOCAIS DE ITEM RÁPIDO
-        // ===================================
-        function toggleNovoItem() {
-            const form = document.getElementById('form-novo-item');
-            const btn = document.getElementById('btn-novo-item-text');
-            if (form) form.classList.toggle('hidden');
-            if (btn) btn.innerHTML = form.classList.contains('hidden') ? '<i class="ph-bold ph-plus-circle"></i> Registar Novo Item' : '<i class="ph-bold ph-minus-circle"></i> Cancelar Registo';
-            if (!form.classList.contains('hidden')) {
-                setTimeout(() => document.getElementById('novo-item-nome')?.focus(), 100);
+        // Remover item do orçamento
+        function removerItemOrcamento(index) {
+            if (window.itensOrcamento) {
+                window.itensOrcamento.splice(index, 1);
+                atualizarTabelaItens();
             }
         }
 
-        function toggleNovoItemTipo() {
-            const tipo = document.getElementById('novo-item-tipo').value;
-            const boxMO = document.getElementById('novo-box-mao-obra');
-            const boxFrete = document.getElementById('novo-box-frete');
-            if (tipo === 'Serviço') {
-                boxMO.classList.remove('hidden');
-                boxFrete.classList.add('hidden');
-            } else {
-                boxMO.classList.add('hidden');
-                boxFrete.classList.remove('hidden');
-            }
-        }
-
-        async function salvarItemRapido() {
-            const nome = document.getElementById('novo-item-nome').value.trim();
-            const tipo = document.getElementById('novo-item-tipo').value;
-            const precoObj = document.getElementById('novo-item-preco').value.replace(',', '.');
-            const moObj = document.getElementById('novo-item-mao-obra').value.replace(',', '.');
-            const freteObj = document.getElementById('novo-item-frete').value.replace(',', '.');
-            const descricao = document.getElementById('novo-item-descricao').value.trim();
-
-            if (!nome || !precoObj) return alert("Preencha Nome e Preço.");
-
-            const preco = parseFloat(precoObj);
-            const mao_de_obra = parseFloat(moObj) || 0;
-            const frete = parseFloat(freteObj) || 0;
-
-            const btn = document.querySelector('button[onclick="salvarItemRapido()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> A guardar...';
-            btn.disabled = true;
-
-            try {
-                const { data: { user } } = await sb.auth.getUser();
-                if (!user) throw new Error("Usuário não logado.");
-
-                const payload = {
-                    user_id: user.id,
-                    nome,
-                    tipo,
-                    preco,
-                    mao_de_obra,
-                    frete,
-                    descricao
-                };
-
-                const { data, error } = await sb.from('itens').insert([payload]).select();
-                if (error) throw error;
-
-                // Sucesso
-                alert("Item adicionado ao catálogo! ✅");
-
-                // Limpa form
-                document.getElementById('novo-item-nome').value = '';
-                document.getElementById('novo-item-preco').value = '';
-                document.getElementById('novo-item-mao-obra').value = '';
-                document.getElementById('novo-item-frete').value = '';
-                document.getElementById('novo-item-descricao').value = '';
-
-                toggleNovoItem();
-
-                // Recarrega lista
-                recarregarItensModal();
-
-            } catch (e) {
-                console.error(e);
-                alert("Erro ao salvar item: " + e.message);
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        function recarregarItensModal() {
-            itensCatalogo = [];
-            const ul = document.getElementById('lista-itens-disponiveis');
-            ul.innerHTML = '<li class="p-8 text-center text-slate-400 flex flex-col items-center"><i class="ph-bold ph-spinner animate-spin text-2xl mb-2"></i> A carregar catálogo...</li>';
-            carregarItensModal();
-        }
-
-        function filtrarItensModal() {
-            const termo = document.getElementById('busca-item-modal').value.toLowerCase();
-            const filtrados = itensCatalogo.filter(i => i.nome.toLowerCase().includes(termo) || (i.descricao && i.descricao.toLowerCase().includes(termo)));
-            renderizarListaModal(filtrados);
-        }
-
-        function abrirModalItens() {
-            document.getElementById('modal-selecao-item').classList.remove('hidden');
-            if (itensCatalogo.length === 0) {
-                carregarItensModal();
-            } else {
-                // Re-renderiza com a moeda atual se já tiver itens carregados
-                renderizarListaModal(itensCatalogo);
-            }
-            document.getElementById('busca-item-modal').focus();
-        }
-        function fecharModalItens() { document.getElementById('modal-selecao-item').classList.add('hidden'); }
-        function recarregarItensModal() { itensCatalogo = []; carregarItensModal(); }
-
-        async function carregarDadosEmpresaCriacao() {
-            try {
-                const { data: { user } } = await sb.auth.getUser();
-                if (user) {
-                    const { data: empresa } = await sb.from('empresas').select('moeda_padrao').eq('user_id', user.id).maybeSingle();
-                    if (empresa) {
-                        /* Removida lógica de moeda */
-                    }
-                }
-            } catch (e) { console.error("Erro ao carregar dados da empresa", e); }
-        }
-
-        // Removida a função togglePixFields pois não é mais usada
-
-        // ========== CADASTRO RÁPIDO DE CLIENTE ==========
-        function toggleNovoCliente() {
-            const form = document.getElementById('form-novo-cliente');
-            const btn = document.getElementById('btn-novo-cliente-text');
-            if (form.classList.contains('hidden')) {
-                form.classList.remove('hidden');
-                btn.innerText = 'Fechar Formulário';
-                document.getElementById('novo-cli-nome').focus();
-            } else {
-                form.classList.add('hidden');
-                btn.innerText = 'Novo Cliente';
-            }
-        }
-
-        async function salvarClienteRapido() {
-            const nome = document.getElementById('novo-cli-nome').value.trim();
-            const phone = document.getElementById('novo-cli-phone').value.trim();
-            const email = document.getElementById('novo-cli-email').value.trim();
-            const empresa = document.getElementById('novo-cli-empresa').value.trim();
-            const cpf = document.getElementById('novo-cli-cpf').value.trim();
-            const endereco = document.getElementById('novo-cli-endereco').value.trim();
-
-            if (!nome) return alert("Digite o nome do cliente.");
-
-            try {
-                const { data: { user } } = await sb.auth.getUser();
-                const { data, error } = await sb.from('clientes').insert([{ nome, phone, email, empresa, cpf, endereco, user_id: user.id }]).select();
-                if (error) throw error;
-
-                // Atualiza o select e seleciona o novo cliente
-                await carregarSelectClientes();
-                document.getElementById('select-cliente').value = nome;
-
-                // Limpa e fecha o formulário
-                document.getElementById('novo-cli-nome').value = '';
-                document.getElementById('novo-cli-phone').value = '';
-                document.getElementById('novo-cli-email').value = '';
-                document.getElementById('novo-cli-empresa').value = '';
-                document.getElementById('novo-cli-cpf').value = '';
-                document.getElementById('novo-cli-endereco').value = '';
-                toggleNovoCliente();
-
-                alert("Cliente registado com sucesso! ✅");
-            } catch (err) {
-                alert("Erro ao guardar cliente: " + err.message);
-            }
-        }
-
-        // ========== CADASTRO RÁPIDO DE ITEM ==========
-        function toggleNovoItem() {
-            const form = document.getElementById('form-novo-item');
-            const btn = document.getElementById('btn-novo-item-text');
-            if (form.classList.contains('hidden')) {
-                form.classList.remove('hidden');
-                btn.innerText = 'Fechar Formulário';
-                document.getElementById('novo-item-nome').focus();
-            } else {
-                form.classList.add('hidden');
-                btn.innerText = 'Registar Novo Item';
-            }
-        }
-
-        function toggleNovoItemTipo() {
-            const tipo = document.getElementById('novo-item-tipo').value;
-            const boxMO = document.getElementById('novo-box-mao-obra');
-            const boxFrete = document.getElementById('novo-box-frete');
-
-            if (tipo === 'Produto') {
-                boxMO.classList.add('hidden');
-                boxFrete.classList.remove('hidden');
-            } else {
-                boxMO.classList.remove('hidden');
-                boxFrete.classList.add('hidden');
-            }
-        }
-
-        async function salvarItemRapido() {
-            const nome = document.getElementById('novo-item-nome').value.trim();
-            const tipo = document.getElementById('novo-item-tipo').value;
-            let preco = document.getElementById('novo-item-preco').value.replace(',', '.');
-            let maoObra = document.getElementById('novo-item-mao-obra').value.replace(',', '.') || '0';
-            let frete = document.getElementById('novo-item-frete').value.replace(',', '.') || '0';
-            const descricao = document.getElementById('novo-item-descricao').value.trim();
-
-            if (tipo === 'Produto') maoObra = 0;
-            if (tipo === 'Serviço') frete = 0;
-
-            if (!nome || !preco) return alert("Preencha nome e preço do item.");
-
-            preco = parseFloat(preco);
-            maoObra = parseFloat(maoObra);
-
-            if (isNaN(preco)) return alert("Preço inválido.");
-
-            try {
-                const { data: { user } } = await sb.auth.getUser();
-                const { data, error } = await sb.from('itens').insert([{ nome, tipo, preco, mao_de_obra: maoObra, frete, descricao, user_id: user.id }]).select();
-                if (error) throw error;
-
-                // Adiciona o item ao orçamento atual
-                const novoItem = { id: data[0].id, nome, tipo, preco, mao_de_obra: maoObra, frete, descricao };
-                selecionarItem(novoItem);
-
-                // Limpa o formulário
-                document.getElementById('novo-item-nome').value = '';
-                document.getElementById('novo-item-preco').value = '';
-                document.getElementById('novo-item-mao-obra').value = '';
-                document.getElementById('novo-item-frete').value = '';
-                document.getElementById('novo-item-descricao').value = '';
-                toggleNovoItem();
-
-                // Atualiza lista do modal
-                itensCatalogo = [];
-                carregarItensModal();
-
-            } catch (err) {
-                alert("Erro ao salvar item: " + err.message);
-            }
-        }
-
-        // Máscaras para Cadastro Rápido
-        // Máscaras (Adaptadas para Portugal)
-        const mascaraDoc = (val) => {
-            val = val.replace(/\D/g, "").slice(0, 9); // NIF tem 9 dígitos
-            // Formato 123 456 789
-            return val.replace(/(\d{3})(\d)/, "$1 $2")
-                .replace(/(\d{3}) (\d{3})(\d)/, "$1 $2 $3");
-        };
-
-        const mascaraTel = (val) => {
-            val = val.replace(/\D/g, "").slice(0, 9); // Telemóvel tem 9 dígitos
-            // Formato 912 345 678
-            return val.replace(/(\d{3})(\d)/, "$1 $2")
-                .replace(/(\d{3}) (\d{3})(\d)/, "$1 $2 $3");
-        };
-
-        // ==========================================
-        // LÓGICA DE CADASTRO UNIFICADO (Modificações)
-        // ==========================================
-        let clientesMap = {};
-        let catalogoMap = {};
-
-        // Sobrescreve a função do app.js para carregar com mais dados
-        window.carregarSelectClientes = async function () {
-            const sel = document.getElementById('select-cliente');
-            if (!sel) return;
-
-            sel.innerHTML = '<option value="">A carregar...</option>';
-
-            const { data: clientes } = await sb.from('clientes').select('*').order('nome');
-
-            sel.innerHTML = '<option value="">Selecione para preencher...</option>'; // Reset
-            clientesMap = {}; // Reset map
-
-            if (clientes) {
-                clientes.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.nome;
-                    opt.innerText = c.nome;
-                    sel.appendChild(opt);
-
-                    // Guarda dados no map
-                    clientesMap[c.nome] = c;
-                });
-            }
-        }
-
-        async function carregarCatalogoInline() {
-            const sel = document.getElementById('select-item-inline');
-            if (!sel) return;
-
-            const { data: itens } = await sb.from('itens').select('*').order('nome');
-
-            sel.innerHTML = '<option value="">Selecione um item do catálogo...</option>';
-            catalogoMap = {};
-
-            if (itens) {
-                itens.forEach(i => {
-                    const opt = document.createElement('option');
-                    opt.value = i.id; // Aqui usamos ID para identificar no map
-                    opt.innerText = `${i.nome} - ${formatarMoeda(i.preco)}`;
-                    sel.appendChild(opt);
-                    catalogoMap[i.id] = i;
-                });
-            }
-        }
-
-        function preencherDadosCliente() {
-            const nomeSelecionado = document.getElementById('select-cliente').value;
-            const cliente = clientesMap[nomeSelecionado];
-
-            if (cliente) {
-                document.getElementById('novo-cli-nome').value = cliente.nome || '';
-                document.getElementById('novo-cli-phone').value = cliente.phone || '';
-                document.getElementById('novo-cli-email').value = cliente.email || '';
-                document.getElementById('novo-cli-cpf').value = cliente.cpf || '';
-                document.getElementById('novo-cli-empresa').value = cliente.empresa || '';
-                document.getElementById('novo-cli-endereco').value = cliente.endereco || '';
-                // Bloqueia campos? Não, deixa editar se quiser atualizar (embora update precise de lógica extra)
-                // Vamos deixar livre, mas se alterar o nome, vira "novo" logicamente
-            } else {
-                limparCamposCliente();
-            }
-        }
-
-        function limparCamposCliente() {
-            document.getElementById('select-cliente').value = "";
-            document.getElementById('novo-cli-nome').value = '';
-            document.getElementById('novo-cli-phone').value = '';
-            document.getElementById('novo-cli-email').value = '';
-            document.getElementById('novo-cli-cpf').value = '';
-            document.getElementById('novo-cli-empresa').value = '';
-            document.getElementById('novo-cli-endereco').value = '';
-        }
-
+        // Alternar entre mão de obra e frete
         function toggleInlineTipo() {
             const tipo = document.getElementById('inline-tipo').value;
             const boxMO = document.getElementById('inline-box-mo');
             const boxFrete = document.getElementById('inline-box-frete');
-
+            
             if (tipo === 'Serviço') {
                 boxMO.classList.remove('hidden');
                 boxFrete.classList.add('hidden');
@@ -1013,274 +803,6 @@
                 boxFrete.classList.remove('hidden');
             }
         }
-
-        function preencherItemInline() {
-            const id = document.getElementById('select-item-inline').value;
-            const item = catalogoMap[id];
-
-            if (item) {
-                document.getElementById('inline-nome').value = item.nome;
-                document.getElementById('inline-preco').value = item.preco.toFixed(2).replace('.', ',');
-                document.getElementById('inline-descricao').value = item.descricao || '';
-
-                // Preenche Tipo e Dados Extras
-                const tipo = item.tipo || 'Serviço'; // default
-                document.getElementById('inline-tipo').value = tipo;
-                toggleInlineTipo(); // Atualiza viz
-
-                if (tipo === 'Serviço') {
-                    document.getElementById('inline-mao-obra').value = (item.mao_de_obra || 0).toFixed(2).replace('.', ',');
-                } else {
-                    document.getElementById('inline-frete').value = (item.frete || 0).toFixed(2).replace('.', ',');
-                }
-
-                document.getElementById('inline-descricao').focus();
-            }
-        }
-
-        async function adicionarItemInline() {
-            const nome = document.getElementById('inline-nome').value.trim();
-            const descricao = document.getElementById('inline-descricao').value.trim();
-            const precoStr = document.getElementById('inline-preco').value.replace('€', '').trim().replace(',', '.');
-            const preco = parseFloat(precoStr);
-
-            const tipo = document.getElementById('inline-tipo').value;
-            const moStr = document.getElementById('inline-mao-obra').value.replace('€', '').trim().replace(',', '.') || '0';
-            const freteStr = document.getElementById('inline-frete').value.replace('€', '').trim().replace(',', '.') || '0';
-
-            let maoObra = parseFloat(moStr);
-            let frete = parseFloat(freteStr);
-
-            // Limpa dados irrelevantes pelo tipo
-            if (tipo === 'Produto') maoObra = 0;
-            if (tipo === 'Serviço') frete = 0;
-
-            if (!nome || isNaN(preco)) return alert("Preencha a descrição e o preço.");
-
-            const btn = document.querySelector('button[onclick="adicionarItemInline()"]');
-            if (!btn) {
-                console.error("Botão 'Adicionar' não encontrado!");
-                return alert("Erro: Botão não encontrado. Recarregue a página.");
-            }
-
-            const originalBtnContent = btn.innerHTML;
-            setBtnLoading(btn, true, 'Add...');
-
-            try {
-                // Item visual para a tabela
-                const novoItem = {
-                    nome,
-                    qtd: 1, // Default 1
-                    preco,
-                    descricao,
-                    tipo,
-                    mao_de_obra: maoObra,
-                    frete: frete
-                };
-
-                let itemExistente = Object.values(catalogoMap).find(i => i.nome.toLowerCase() === nome.toLowerCase());
-
-                if (!itemExistente) {
-                    // CRIA NO BANCO SE NÃO EXISTE
-                    const { data: { user } } = await sb.auth.getUser();
-                    const { data, error } = await sb.from('itens').insert([{
-                        nome,
-                        preco,
-                        descricao,
-                        tipo,
-                        mao_de_obra: maoObra,
-                        frete: frete,
-                        user_id: user.id
-                    }]).select();
-
-                    if (!error && data) {
-                        novoItem.id = data[0].id;
-                        // Atualiza map local
-                        catalogoMap[data[0].id] = data[0];
-
-                        // Atualiza o select de catálogo
-                        const opt = document.createElement('option');
-                        opt.value = data[0].id;
-                        opt.innerText = `${data[0].nome} - ${formatarMoeda(data[0].preco)}`;
-                        document.getElementById('select-item-inline').appendChild(opt);
-                    }
-                } else {
-                    novoItem.id = itemExistente.id;
-                }
-
-                // Adiciona à lista do orçamento
-                selecionarItem(novoItem);
-
-                // Limpa campos
-                document.getElementById('inline-nome').value = '';
-                document.getElementById('inline-descricao').value = '';
-                document.getElementById('inline-preco').value = '';
-                document.getElementById('inline-mao-obra').value = '';
-                document.getElementById('inline-frete').value = '';
-                document.getElementById('select-item-inline').value = '';
-
-                // Reset tipo default
-                document.getElementById('inline-tipo').value = 'Serviço';
-                toggleInlineTipo();
-
-            } catch (e) {
-                console.error("Erro ao adicionar item:", e);
-                // Item é adicionado mesmo com erro, então não mostramos alert
-            } finally {
-                btn.innerHTML = originalBtnContent;
-                btn.disabled = false;
-            }
-        }
-
-        // Sobrescreve a função de salvar orçamento para garantir criação do cliente
-        window.salvarOrcamentoCompleto = async function () {
-            const btn = document.querySelector('button[onclick="salvarOrcamentoCompleto()"]');
-
-            // 1. Pega dados do form de cliente (prioridade sobre o select)
-            const nome = document.getElementById('novo-cli-nome').value.trim();
-            const phone = document.getElementById('novo-cli-phone').value.trim();
-            const email = document.getElementById('novo-cli-email').value.trim();
-            const empresa = document.getElementById('novo-cli-empresa').value.trim();
-            const cpf = document.getElementById('novo-cli-cpf').value.trim();
-            const endereco = document.getElementById('novo-cli-endereco').value.trim();
-
-            if (!nome) return alert("Por favor, preencha o nome do cliente.");
-
-            setBtnLoading(btn, true, "A verificar cliente...");
-
-            try {
-                // 2. Verifica se cliente já existe (pelo nome no map ou check no banco)
-                // Se o nome no input for igual ao do select, é o mesmo cliente.
-                const selectVal = document.getElementById('select-cliente').value;
-                let clienteFinalNome = nome;
-
-                // Se o nome digitado não está no nosso map de clientes -> Criar
-                if (!clientesMap[nome]) {
-                    const { data: { user } } = await sb.auth.getUser();
-                    console.log("Criando novo cliente automatico:", nome);
-
-                    const { error } = await sb.from('clientes').insert([{
-                        nome, phone, email, empresa, cpf, endereco, user_id: user.id
-                    }]);
-
-                    if (error) throw error;
-
-                    // Atualiza map e select (hack visual)
-                    const sel = document.getElementById('select-cliente');
-                    const opt = document.createElement('option');
-                    opt.value = nome;
-                    opt.innerText = nome;
-                    sel.appendChild(opt);
-                    sel.value = nome; // Seleciona ele para a logica original funcionar se precisar
-                } else {
-                    // Cliente existe, vamos usar o nome dele.
-                    // (Opcional) Poderíamos fazer update dos dados aqui se mudou algo.
-                    // Por segurança, vamos só usar.
-                    document.getElementById('select-cliente').value = nome;
-                }
-
-                // 3. Continua salvando o orçamento com a lógica padrão
-                // Copia a lógica original do app.js ou chama se pudéssemos (mas ela espera o select preenchido)
-                // Como já preenchemos o select acima (sel.value = nome), podemos re-implementar a parte de insert do orçamento aqui
-                // ou chamar uma versão ajustada. Vou re-implementar para ter controle.
-
-                const valorEl = document.getElementById('input-valor');
-                let valorTexto = valorEl.value.replace('€', '').trim().replace(/\./g, '').replace(',', '.');
-                const valor = parseFloat(valorTexto);
-                if (isNaN(valor) || valor <= 0) throw new Error("Valor inválido.");
-
-                const servico = document.getElementById('input-descricao').value; // Pega texto gerado
-                const prazo = document.getElementById('input-prazo').value;
-                const pagamento = document.getElementById('select-pagamento').value;
-                const moeda = 'EUR';
-                const itensJsonEl = document.getElementById('input-itens-json');
-                const itensJson = itensJsonEl && itensJsonEl.value ? JSON.parse(itensJsonEl.value) : [];
-
-                setBtnLoading(btn, true, "A Gerar Documento...");
-
-                const { data: { user } } = await sb.auth.getUser();
-                const { data: novoOrc, error: errOrc } = await sb.from('orcamentos').insert([{
-                    cliente: nome, // Usa o nome garantido
-                    valor: parseFloat(valor),
-                    mao_de_obra: parseFloat(document.getElementById('input-mao-obra-total').value) || 0,
-                    servico,
-                    prazo,
-                    pagamento,
-                    moeda,
-                    status: 'Pendente',
-                    user_id: user.id,
-                    itens_json: itensJson
-                }]).select();
-
-                if (errOrc) throw errOrc;
-                window.location.href = `detalhes.html?id=${novoOrc[0].id}`;
-
-            } catch (err) {
-                alert("Erro: " + err.message);
-                setBtnLoading(btn, false, 'Guardar e Gerar');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Inicia carregamentos
-            carregarDadosEmpresaCriacao();
-
-            // Listeners máscaras
-            const novoCliCpf = document.getElementById('novo-cli-cpf');
-            const novoCliPhone = document.getElementById('novo-cli-phone');
-            if (novoCliCpf) novoCliCpf.addEventListener('input', (e) => e.target.value = mascaraDoc(e.target.value));
-            if (novoCliPhone) novoCliPhone.addEventListener('input', (e) => e.target.value = mascaraTel(e.target.value));
-
-            atualizarSimboloMoeda();
-
-            // Novos
-            if (window.carregarSelectClientes) window.carregarSelectClientes();
-            carregarCatalogoInline();
-        });
-
-        function atualizarSimboloMoeda() {
-            const select = document.getElementById('select-moeda');
-            const symbolSpan = document.getElementById('currency-symbol');
-            if (select && symbolSpan) {
-                const map = { 'EUR': '€', 'USD': '$' };
-                symbolSpan.innerText = map[select.value] || '€';
-            }
-        }
     </script>
-    <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .animate-scale-in {
-            animation: scaleIn 0.2s ease-out;
-        }
-    </style>
 </body>
-
 </html>

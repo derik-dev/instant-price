@@ -460,7 +460,11 @@ async function removerItem(id) {
 
 window.salvarOrcamentoCompleto = async function () {
     const btn = document.querySelector('button[onclick="salvarOrcamentoCompleto()"]') || document.querySelector('button[onclick="criarOrcamento()"]');
-    const cliente = document.getElementById('select-cliente').value;
+    
+    // Salvar cliente automaticamente se for novo
+    let clienteId = await window.salvarClienteSeNovo ? window.salvarClienteSeNovo() : document.getElementById('select-cliente').value;
+    
+    const cliente = clienteId;
     const valorEl = document.getElementById('orc-valor') || document.getElementById('input-valor');
     let valorTexto = valorEl.value || valorEl.innerText;
 
@@ -468,6 +472,7 @@ window.salvarOrcamentoCompleto = async function () {
     valorTexto = valorTexto.replace('€', '').trim().replace(/\./g, '').replace(',', '.');
     const valor = parseFloat(valorTexto);
 
+    if (!cliente) return alert("Selecione ou preencha os dados do cliente.");
     if (isNaN(valor) || valor <= 0) return alert("Valor inválido. Use o formato: 250,00");
 
     const servico = document.getElementById('input-descricao') ? document.getElementById('input-descricao').value : (document.getElementById('orc-descricao') ? document.getElementById('orc-descricao').innerText : '');
@@ -767,17 +772,29 @@ async function carregarDetalhes() {
 
     // Carrega dados do cliente
     if (orc.cliente) {
-        console.log("Buscando cliente:", orc.cliente);
-        const { data: cli } = await sb.from('clientes').select('*').ilike('nome', orc.cliente.trim()).maybeSingle();
+        console.log("Buscando cliente ID:", orc.cliente);
+        // Verificar se é um ID (número) ou nome (texto)
+        let clienteQuery;
+        if (!isNaN(orc.cliente)) {
+            // É um ID, buscar por ID
+            clienteQuery = sb.from('clientes').select('*').eq('id', orc.cliente).maybeSingle();
+        } else {
+            // É um nome, buscar por nome (compatibilidade com dados antigos)
+            clienteQuery = sb.from('clientes').select('*').ilike('nome', orc.cliente.trim()).maybeSingle();
+        }
+        
+        const { data: cli } = await clienteQuery;
         console.log("Cliente encontrado:", cli);
         if (cli) {
+            if (document.getElementById('cli-nome')) document.getElementById('cli-nome').innerText = cli.nome || 'Cliente';
             if (document.getElementById('cli-email')) document.getElementById('cli-email').innerText = cli.email || '-';
             if (document.getElementById('cli-tel')) document.getElementById('cli-tel').innerText = cli.phone || '-';
             if (document.getElementById('cli-sub-empresa')) document.getElementById('cli-sub-empresa').innerText = cli.empresa || '-';
             if (document.getElementById('cli-cpf')) document.getElementById('cli-cpf').innerText = cli.cpf || '-';
             if (document.getElementById('cli-endereco')) document.getElementById('cli-endereco').innerText = cli.endereco || '-';
         } else {
-            // Se não encontrar cliente, preenche com "-"
+            // Se não encontrar cliente, preenche com "-" e usa o valor original como nome
+            if (document.getElementById('cli-nome')) document.getElementById('cli-nome').innerText = orc.cliente || 'Cliente';
             if (document.getElementById('cli-email')) document.getElementById('cli-email').innerText = '-';
             if (document.getElementById('cli-tel')) document.getElementById('cli-tel').innerText = '-';
             if (document.getElementById('cli-sub-empresa')) document.getElementById('cli-sub-empresa').innerText = '-';

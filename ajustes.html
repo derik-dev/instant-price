@@ -63,7 +63,16 @@
                             placeholder="Ex: Silva Soluções Elétricas">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">NIF</label>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase">Identificação Fiscal</label>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="alternarIdentificacao()" 
+                                    class="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1">
+                                    <i class="ph-bold ph-arrow-clockwise"></i> Alternar
+                                </button>
+                                <span id="tipo-identificacao" class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded">NIF</span>
+                            </div>
+                        </div>
                         <input type="text" id="conf-doc"
                             class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
                             placeholder="123456789">
@@ -245,6 +254,71 @@
             if (inputDoc) inputDoc.addEventListener('input', (e) => e.target.value = mascaraDoc(e.target.value));
             if (inputTel) inputTel.addEventListener('input', (e) => e.target.value = mascaraTel(e.target.value));
         });
+
+        // Função para alternar entre NIF e NIPC
+        function alternarIdentificacao() {
+            const tipoSpan = document.getElementById('tipo-identificacao');
+            const inputDoc = document.getElementById('conf-doc');
+            const nomeLabel = document.querySelector('label[for="conf-nome"]');
+            const h2Title = document.querySelector('h2');
+            
+            if (tipoSpan.textContent === 'NIF') {
+                // Mudar para NIPC
+                tipoSpan.textContent = 'NIPC';
+                tipoSpan.className = 'text-xs font-medium text-slate-500 bg-green-100 px-2 py-1 rounded';
+                
+                // Atualizar placeholder
+                if (inputDoc) inputDoc.placeholder = '12345678';
+                
+                // Atualizar textos da página
+                if (nomeLabel) nomeLabel.textContent = 'Nome da Empresa / O Seu Nome';
+                if (h2Title) h2Title.innerHTML = '<i class="ph-duotone ph-buildings text-blue-600"></i> Informações da Empresa';
+                
+                // Atualizar título da página
+                document.title = 'Configurações • OrçaFácil';
+                
+                // Atualizar máscara para NIPC (8 dígitos)
+                const inputDocElement = document.getElementById('conf-doc');
+                if (inputDocElement) {
+                    inputDocElement.removeEventListener('input', inputDocElement.eventListener);
+                    inputDocElement.addEventListener('input', (e) => e.target.value = mascaraNIPC(e.target.value));
+                    inputDocElement.eventListener = arguments.callee;
+                }
+                
+            } else {
+                // Mudar para NIF
+                tipoSpan.textContent = 'NIF';
+                tipoSpan.className = 'text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded';
+                
+                // Atualizar placeholder
+                if (inputDoc) inputDoc.placeholder = '123456789';
+                
+                // Atualizar textos da página
+                if (nomeLabel) nomeLabel.textContent = 'Nome da Empresa / O Seu Nome';
+                if (h2Title) h2Title.innerHTML = '<i class="ph-duotone ph-user text-blue-600"></i> Informações do Usuário';
+                
+                // Atualizar título da página
+                document.title = 'Configurações • OrçaFácil';
+                
+                // Restaurar máscara para NIF (9 dígitos)
+                const inputDocElement = document.getElementById('conf-doc');
+                if (inputDocElement) {
+                    inputDocElement.removeEventListener('input', inputDocElement.eventListener);
+                    inputDocElement.addEventListener('input', (e) => e.target.value = mascaraDoc(e.target.value));
+                    inputDocElement.eventListener = arguments.callee;
+                }
+            }
+        }
+
+        // Máscara para NIPC (8 dígitos)
+        const mascaraNIPC = (val) => {
+            val = val.replace(/\D/g, "").slice(0, 8); // NIPC tem 8 dígitos
+            // Formato 1234 5678
+            return val.replace(/(\d{4})(\d)/, "$1 $2");
+        };
+
+        // Tornar a função global
+        window.alternarIdentificacao = alternarIdentificacao;
     </script>
     <script src="app.js?v=1002"></script>
 </body>
