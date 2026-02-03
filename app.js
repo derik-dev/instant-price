@@ -152,6 +152,14 @@ async function carregarOrcamentosRecentes() {
 
     try {
         const { data: lista } = await sb.from('orcamentos').select('*').order('created_at', { ascending: false }).limit(5);
+        const { data: clientes } = await sb.from('clientes').select('id, nome');
+
+        // Criar mapa de nomes por ID
+        const mapaNomes = {};
+        if (clientes) {
+            clientes.forEach(c => mapaNomes[c.id] = c.nome);
+        }
+
         ul.innerHTML = '';
 
         if (!lista || lista.length === 0) {
@@ -166,6 +174,10 @@ async function carregarOrcamentosRecentes() {
             let statusColor = orc.status === 'Aprovado' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
             let icon = orc.status === 'Aprovado' ? 'ph-check-circle' : 'ph-clock'; // Fallback icon
 
+            // Buscar nome do cliente pelo ID
+            const clienteId = parseInt(orc.cliente);
+            const nomeCliente = !isNaN(clienteId) && mapaNomes[clienteId] ? mapaNomes[clienteId] : orc.cliente;
+
             // Converte para Euro para exibição padronizada
             let valorEuro = converterParaEuro(orc.valor, orc.moeda);
             let displayValor = formatarMoeda(valorEuro);
@@ -177,7 +189,7 @@ async function carregarOrcamentosRecentes() {
                         <i class="ph-bold ${icon} text-xl"></i>
                     </div>
                     <div>
-                        <p class="font-bold text-slate-800 text-sm">${orc.cliente}</p>
+                        <p class="font-bold text-slate-800 text-sm">${nomeCliente}</p>
                         <p class="text-xs text-slate-400">${formatarData(orc.created_at)}</p>
                     </div>
                 </div>
@@ -307,7 +319,18 @@ async function removerCliente(id) {
         console.error(err);
     }
 }
-async function carregarSelectClientes() { const sel = document.getElementById('select-cliente'); if (!sel) return; const { data: clientes } = await sb.from('clientes').select('nome').order('nome'); sel.innerHTML = '<option value="">Selecione um cliente...</option>'; if (clientes) clientes.forEach(c => { const opt = document.createElement('option'); opt.value = c.nome; opt.innerText = c.nome; sel.appendChild(opt); }); }
+async function carregarSelectClientes() {
+    const sel = document.getElementById('select-cliente');
+    if (!sel) return;
+    const { data: clientes } = await sb.from('clientes').select('id, nome').order('nome');
+    sel.innerHTML = '<option value="">Selecione um cliente...</option>';
+    if (clientes) clientes.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;  // Salva o ID do cliente
+        opt.innerText = c.nome;
+        sel.appendChild(opt);
+    });
+}
 
 // ===================================
 // ITENS / CATÁLOGO
@@ -460,10 +483,10 @@ async function removerItem(id) {
 
 window.salvarOrcamentoCompleto = async function () {
     const btn = document.querySelector('button[onclick="salvarOrcamentoCompleto()"]') || document.querySelector('button[onclick="criarOrcamento()"]');
-    
+
     // Salvar cliente automaticamente se for novo
-    let clienteId = await window.salvarClienteSeNovo ? window.salvarClienteSeNovo() : document.getElementById('select-cliente').value;
-    
+    let clienteId = window.salvarClienteSeNovo ? await window.salvarClienteSeNovo() : document.getElementById('select-cliente').value;
+
     const cliente = clienteId;
     const valorEl = document.getElementById('orc-valor') || document.getElementById('input-valor');
     let valorTexto = valorEl.value || valorEl.innerText;
@@ -525,17 +548,19 @@ window.salvarOrcamentoCompleto = async function () {
 async function carregarPaginaOrcamentos() {
     const tbody = document.getElementById('tabela-completa'); if (!tbody) return;
 
-    // Busca orçamentos e todos os clientes para mapear emails
+    // Busca orçamentos e todos os clientes para mapear por ID
     const { data: lista } = await sb.from('orcamentos').select('*').order('created_at', { ascending: false });
-    const { data: clientes } = await sb.from('clientes').select('nome, email');
+    const { data: clientes } = await sb.from('clientes').select('id, nome, email');
 
-    // Cria mapa de emails: { "Nome Cliente": "email@..." }
+    // Cria mapas por ID: { id: { nome, email } }
+    const mapaNomes = {};
     const mapaEmails = {};
     if (clientes) {
-        clientes.forEach(c => mapaEmails[c.nome] = c.email);
+        clientes.forEach(c => {
+            mapaNomes[c.id] = c.nome;
+            mapaEmails[c.id] = c.email;
+        });
     }
-
-    // Cotações (mesmas do KPI) - REMOVIDO
 
     tbody.innerHTML = '';
     if (!lista) return;
@@ -543,7 +568,10 @@ async function carregarPaginaOrcamentos() {
     lista.forEach(orc => {
         let status = orc.status === 'Aprovado' ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-green-50 text-green-700 border border-green-200">Aprovado</span>` : `<span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">Pendente</span>`;
 
-        const email = mapaEmails[orc.cliente] || '--';
+        // Busca nome e email pelo ID (ou usa o valor antigo se for nome)
+        const clienteId = parseInt(orc.cliente);
+        const nomeCliente = !isNaN(clienteId) && mapaNomes[clienteId] ? mapaNomes[clienteId] : orc.cliente;
+        const email = !isNaN(clienteId) && mapaEmails[clienteId] ? mapaEmails[clienteId] : '--';
 
         // Conversão e formatação na moeda padrão do usuário (EUR)
         let valorEuro = converterParaEuro(orc.valor, orc.moeda);
@@ -551,7 +579,7 @@ async function carregarPaginaOrcamentos() {
 
         tbody.innerHTML += `
         <tr class="hover:bg-slate-50/80 transition-colors group">
-            <td class="p-4 pl-6 font-bold text-slate-900">${orc.cliente}</td>
+            <td class="p-4 pl-6 font-bold text-slate-900">${nomeCliente}</td>
             <td class="p-4 hidden md:table-cell text-slate-500 text-sm">${email}</td>
             <td class="p-4 font-bold">${displayValor}</td>
             <td class="p-4 hidden md:table-cell">${status}</td>
@@ -569,7 +597,7 @@ function formatarMoeda(v) {
     // Força Euro de forma absoluta para evitar qualquer conversão indevida
     const valor = parseFloat(v);
     if (isNaN(valor)) return '€ 0,00';
-    
+
     // Formatação manual para garantir controle total
     const partes = valor.toFixed(2).split('.');
     partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Separador de milhar
@@ -767,34 +795,76 @@ async function carregarDetalhes() {
     if (document.getElementById('orc-subtotal-mao-obra')) document.getElementById('orc-subtotal-mao-obra').innerText = formatarMoeda(totalMO);
     if (document.getElementById('orc-subtotal-frete')) document.getElementById('orc-subtotal-frete').innerText = formatarMoeda(totalFrete);
 
-    // Chave PIX será preenchida depois, junto com QR code
-    if (document.getElementById('cli-nome')) document.getElementById('cli-nome').innerText = orc.cliente || 'Cliente';
-
     // Carrega dados do cliente
     if (orc.cliente) {
-        console.log("Buscando cliente ID:", orc.cliente);
-        // Verificar se é um ID (número) ou nome (texto)
+        console.log("=== DEBUG CLIENTE ===");
+        console.log("orc.cliente:", orc.cliente);
+        console.log("Tipo:", typeof orc.cliente);
+
+        const clienteValue = String(orc.cliente).trim();
+        console.log("clienteValue (string):", clienteValue);
+
         let clienteQuery;
-        if (!isNaN(orc.cliente)) {
-            // É um ID, buscar por ID
-            clienteQuery = sb.from('clientes').select('*').eq('id', orc.cliente).maybeSingle();
+
+        // Tenta converter para número - se for válido, busca por ID
+        const clienteAsNumber = Number(clienteValue);
+        const isNumericId = !isNaN(clienteAsNumber) && clienteValue !== '' && Number.isInteger(clienteAsNumber);
+
+        console.log("clienteAsNumber:", clienteAsNumber);
+        console.log("isNumericId:", isNumericId);
+
+        if (isNumericId) {
+            console.log("Buscando cliente por ID:", clienteAsNumber);
+            clienteQuery = sb.from('clientes').select('*').eq('id', clienteAsNumber).maybeSingle();
         } else {
-            // É um nome, buscar por nome (compatibilidade com dados antigos)
-            clienteQuery = sb.from('clientes').select('*').ilike('nome', orc.cliente.trim()).maybeSingle();
+            console.log("Buscando cliente por nome:", clienteValue);
+            clienteQuery = sb.from('clientes').select('*').ilike('nome', clienteValue).maybeSingle();
         }
-        
-        const { data: cli } = await clienteQuery;
-        console.log("Cliente encontrado:", cli);
+
+        const { data: cli, error: cliError } = await clienteQuery;
+
+        if (cliError) {
+            console.error("❌ Erro ao buscar cliente:", cliError);
+        }
+
+        console.log("Resultado da busca:");
+        console.log("- data (cli):", cli);
+        console.log("- error:", cliError);
+
+        // Vamos listar todos os clientes para debug
+        console.log("=== LISTANDO TODOS OS CLIENTES ===");
+        const { data: todosClientes, error: errorTodos } = await sb.from('clientes').select('id, nome');
+        console.log("Todos os clientes:", todosClientes);
+        if (errorTodos) console.error("Erro ao listar todos:", errorTodos);
+
         if (cli) {
-            if (document.getElementById('cli-nome')) document.getElementById('cli-nome').innerText = cli.nome || 'Cliente';
-            if (document.getElementById('cli-email')) document.getElementById('cli-email').innerText = cli.email || '-';
-            if (document.getElementById('cli-tel')) document.getElementById('cli-tel').innerText = cli.phone || '-';
-            if (document.getElementById('cli-sub-empresa')) document.getElementById('cli-sub-empresa').innerText = cli.empresa || '-';
-            if (document.getElementById('cli-cpf')) document.getElementById('cli-cpf').innerText = cli.cpf || '-';
-            if (document.getElementById('cli-endereco')) document.getElementById('cli-endereco').innerText = cli.endereco || '-';
+            if (document.getElementById('cli-nome')) {
+                document.getElementById('cli-nome').innerText = cli.nome || 'Cliente';
+                console.log("✅ Nome preenchido:", cli.nome);
+            }
+            if (document.getElementById('cli-email')) {
+                document.getElementById('cli-email').innerText = cli.email || '-';
+                console.log("✅ Email preenchido:", cli.email);
+            }
+            if (document.getElementById('cli-tel')) {
+                document.getElementById('cli-tel').innerText = cli.phone || '-';
+                console.log("✅ Telefone preenchido:", cli.phone);
+            }
+            if (document.getElementById('cli-sub-empresa')) {
+                document.getElementById('cli-sub-empresa').innerText = cli.empresa || '-';
+                console.log("✅ Empresa preenchida:", cli.empresa);
+            }
+            if (document.getElementById('cli-cpf')) {
+                document.getElementById('cli-cpf').innerText = cli.cpf || '-';
+                console.log("✅ NIF preenchido:", cli.cpf);
+            }
+            if (document.getElementById('cli-endereco')) {
+                document.getElementById('cli-endereco').innerText = cli.endereco || '-';
+                console.log("✅ Morada preenchida:", cli.endereco);
+            }
         } else {
-            // Se não encontrar cliente, preenche com "-" e usa o valor original como nome
-            if (document.getElementById('cli-nome')) document.getElementById('cli-nome').innerText = orc.cliente || 'Cliente';
+            console.warn("⚠️ Cliente não encontrado no banco de dados");
+            if (document.getElementById('cli-nome')) document.getElementById('cli-nome').innerText = clienteValue || 'Cliente';
             if (document.getElementById('cli-email')) document.getElementById('cli-email').innerText = '-';
             if (document.getElementById('cli-tel')) document.getElementById('cli-tel').innerText = '-';
             if (document.getElementById('cli-sub-empresa')) document.getElementById('cli-sub-empresa').innerText = '-';
@@ -1011,7 +1081,7 @@ async function salvarConfiguracoesSupabase() {
 // Aplica cores da empresa no PDF usando estilos inline (compatível com html2pdf)
 function aplicarCoresPDF(corPrimaria, corTexto = null) {
     console.log('🎨 Aplicando cores PDF:', corPrimaria, corTexto);
-    
+
     if (!corPrimaria || corPrimaria === '#000000') {
         console.log('⚠️ Cor primária ignorada:', corPrimaria);
         return; // Ignora se for preto ou vazio

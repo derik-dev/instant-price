@@ -277,8 +277,7 @@
                         </div>
                         <div class="flex justify-between items-center pt-2">
                             <div class="flex flex-col pl-1">
-                                <span
-                                    class="text-sm font-black uppercase text-black">Total</span>
+                                <span class="text-sm font-black uppercase text-black">Total</span>
                             </div>
                             <span id="orc-valor" class="text-2xl font-black text-blue-600">€ 0,00</span>
                         </div>
@@ -343,45 +342,55 @@
                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div
+                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <form id="form-cliente" class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
                         <div class="w-full">
-                            <h3 id="modal-cliente-titulo" class="text-lg leading-6 font-medium text-gray-900">Novo Cliente</h3>
+                            <h3 id="modal-cliente-titulo" class="text-lg leading-6 font-medium text-gray-900">Novo
+                                Cliente</h3>
                             <div class="mt-6 grid grid-cols-1 gap-4">
                                 <input type="hidden" id="cli-id">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Nome *</label>
-                                    <input type="text" id="cli-nome" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <input type="text" id="cli-nome" required
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Email</label>
-                                    <input type="email" id="cli-email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <input type="email" id="cli-email"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Telefone</label>
-                                    <input type="tel" id="cli-phone" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <input type="tel" id="cli-phone"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Empresa</label>
-                                    <input type="text" id="cli-empresa" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <input type="text" id="cli-empresa"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">NIF</label>
-                                    <input type="text" id="cli-cpf" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <input type="text" id="cli-cpf"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Endereço</label>
-                                    <input type="text" id="cli-endereco" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <input type="text" id="cli-endereco"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-5 sm:mt-6 sm:flex sm:flex-row-reverse">
-                        <button type="button" onclick="salvarCliente()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        <button type="button" onclick="salvarCliente()"
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
                             <i class="ph-bold ph-check"></i> Guardar Cliente
                         </button>
-                        <button type="button" onclick="toggleModal('modal-cliente', 'close')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        <button type="button" onclick="toggleModal('modal-cliente', 'close')"
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Cancelar
                         </button>
                     </div>
@@ -393,10 +402,10 @@
     <script src="app.js?v=2025-01-29-EURO-FIX"></script>
     <script>
         // Carregar itens do catálogo no select
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', async function () {
             await carregarItensInline();
             await carregarSelectClientes();
-            
+
             // Definir data de hoje automaticamente
             const dataInput = document.getElementById('input-validade');
             if (dataInput) {
@@ -419,11 +428,11 @@
         async function carregarItensInline() {
             const select = document.getElementById('select-item-inline');
             if (!select) return;
-            
+
             try {
                 const { data: itens } = await sb.from('itens').select('*').order('nome');
                 select.innerHTML = '<option value="">Selecione um item do catálogo...</option>';
-                
+
                 if (itens && itens.length > 0) {
                     itens.forEach(item => {
                         const option = document.createElement('option');
@@ -441,11 +450,11 @@
         async function carregarSelectClientes() {
             const select = document.getElementById('select-cliente');
             if (!select) return;
-            
+
             try {
                 const { data: clientes } = await sb.from('clientes').select('*').order('nome');
                 select.innerHTML = '<option value="">Selecione para preencher...</option>';
-                
+
                 if (clientes && clientes.length > 0) {
                     clientes.forEach(cliente => {
                         const option = document.createElement('option');
@@ -463,17 +472,17 @@
         async function preencherDadosCliente() {
             const select = document.getElementById('select-cliente');
             const clienteId = select.value;
-            
+
             if (!clienteId) {
                 // Limpar campos
                 limparCamposCliente();
                 return;
             }
-            
+
             try {
                 const { data: cliente, error } = await sb.from('clientes').select('*').eq('id', clienteId).single();
                 if (error) throw error;
-                
+
                 if (cliente) {
                     document.getElementById('novo-cli-nome').value = cliente.nome || '';
                     document.getElementById('novo-cli-email').value = cliente.email || '';
@@ -499,30 +508,31 @@
             const endereco = document.getElementById('novo-cli-endereco').value.trim();
             const validade = document.getElementById('input-validade').value;
             const selectCliente = document.getElementById('select-cliente').value;
-            
+
             // Se já tem cliente selecionado, não salva
             if (selectCliente) return selectCliente;
-            
+
             // Se não tem nome, não salva
             if (!nome) return null;
-            
+
             try {
                 const { data: { user } } = await sb.auth.getUser();
                 if (!user) throw new Error("Usuário não logado");
-                
-                // Verificar se cliente já existe pelo nome
-                const { data: clienteExistente } = await sb.from('clientes')
+
+                // Verificar se cliente já existe pelo nome (usa maybeSingle para não dar erro)
+                const { data: clienteExistente, error: errorBusca } = await sb.from('clientes')
                     .select('*')
                     .eq('user_id', user.id)
                     .eq('nome', nome)
-                    .single();
-                
-                if (clienteExistente) {
+                    .maybeSingle();
+
+                // Ignora erro de busca, segue para criar novo
+                if (clienteExistente && clienteExistente.id) {
                     // Cliente já existe, usar ele
                     document.getElementById('select-cliente').value = clienteExistente.id;
                     return clienteExistente.id;
                 }
-                
+
                 // Salvar novo cliente
                 const payload = {
                     user_id: user.id,
@@ -531,22 +541,21 @@
                     phone: telefone,
                     cpf: nif,
                     empresa,
-                    endereco,
-                    validade_orcamento: validade
+                    endereco
                 };
-                
+
                 const { data, error } = await sb.from('clientes').insert([payload]).select();
                 if (error) throw error;
-                
+
                 if (data && data.length > 0) {
                     console.log('Cliente salvo:', data[0]);
-                    
+
                     // Recarregar o select para incluir o novo cliente
                     await carregarSelectClientes();
-                    
+
                     // Selecionar o novo cliente no select
                     document.getElementById('select-cliente').value = data[0].id;
-                    
+
                     return data[0].id;
                 }
             } catch (error) {
@@ -554,9 +563,12 @@
                 // Não mostra alert para não atrapalhar o fluxo
                 return null;
             }
-            
+
             return null;
         }
+
+        // Expor no escopo global para o app.js acessar
+        window.salvarClienteSeNovo = salvarClienteSeNovo;
 
         // Limpar campos do cliente
         function limparCamposCliente() {
@@ -569,7 +581,7 @@
             document.getElementById('select-cliente').value = '';
             // Manter a data de hoje, não limpar o campo
             // document.getElementById('input-validade').value = '';
-            
+
             // Restaurar data de hoje se necessário
             const dataInput = document.getElementById('input-validade');
             if (dataInput && !dataInput.value) {
@@ -582,7 +594,7 @@
         function preencherItemInline() {
             const select = document.getElementById('select-item-inline');
             const itemId = select.value;
-            
+
             if (!itemId) {
                 // Limpar campos
                 document.getElementById('inline-nome').value = '';
@@ -592,7 +604,7 @@
                 toggleInlineTipo();
                 return;
             }
-            
+
             // Buscar item completo do banco
             sb.from('itens').select('*').eq('id', itemId).single()
                 .then(({ data, error }) => {
@@ -603,7 +615,7 @@
                         document.getElementById('inline-descricao').value = data.descricao || '';
                         document.getElementById('inline-tipo').value = data.tipo || 'Serviço';
                         toggleInlineTipo();
-                        
+
                         // Preencher mão de obra ou frete
                         if (data.tipo === 'Serviço') {
                             document.getElementById('inline-mao-obra').value = (data.mao_de_obra || 0).toFixed(2).replace('.', ',');
@@ -624,17 +636,17 @@
             const precoStr = document.getElementById('inline-preco').value.replace('€', '').trim().replace(',', '.');
             const tipo = document.getElementById('inline-tipo').value;
             const selectItem = document.getElementById('select-item-inline').value;
-            
+
             const preco = parseFloat(precoStr) || 0;
-            
+
             if (!nome || preco <= 0) {
                 alert('Preencha o nome e o preço do item!');
                 return;
             }
-            
+
             let mao_de_obra = 0;
             let frete = 0;
-            
+
             if (tipo === 'Serviço') {
                 const moStr = document.getElementById('inline-mao-obra').value.replace('€', '').trim().replace(',', '.');
                 mao_de_obra = parseFloat(moStr) || 0;
@@ -642,15 +654,15 @@
                 const freteStr = document.getElementById('inline-frete').value.replace('€', '').trim().replace(',', '.');
                 frete = parseFloat(freteStr) || 0;
             }
-            
+
             let itemId = selectItem;
-            
+
             // Se não for um item do catálogo, salvar no banco primeiro
             if (!selectItem) {
                 try {
                     const { data: { user } } = await sb.auth.getUser();
                     if (!user) throw new Error("Usuário não logado");
-                    
+
                     const payload = {
                         user_id: user.id,
                         nome,
@@ -660,17 +672,17 @@
                         frete,
                         descricao
                     };
-                    
+
                     const { data, error } = await sb.from('itens').insert([payload]).select();
                     if (error) throw error;
-                    
+
                     if (data && data.length > 0) {
                         itemId = data[0].id;
                         console.log('Item salvo no catálogo:', data[0]);
-                        
+
                         // Recarregar o select para incluir o novo item
                         await carregarItensInline();
-                        
+
                         // Selecionar o novo item no select
                         document.getElementById('select-item-inline').value = itemId;
                     }
@@ -680,7 +692,7 @@
                     return;
                 }
             }
-            
+
             // Adicionar ao orçamento
             const item = {
                 id: itemId,
@@ -692,15 +704,15 @@
                 mao_de_obra,
                 frete
             };
-            
+
             // Verificar se já existe um array de itens
             if (!window.itensOrcamento) {
                 window.itensOrcamento = [];
             }
-            
+
             window.itensOrcamento.push(item);
             atualizarTabelaItens();
-            
+
             // Limpar campos
             document.getElementById('inline-nome').value = '';
             document.getElementById('inline-preco').value = '';
@@ -722,34 +734,34 @@
             const subtotalFrete = document.getElementById('subtotal-frete');
             const inputValor = document.getElementById('input-valor');
             const inputItensJson = document.getElementById('input-itens-json');
-            
+
             if (!tbody || !window.itensOrcamento) return;
-            
+
             tbody.innerHTML = '';
             let totalProd = 0;
             let totalMO = 0;
             let totalFrete = 0;
-            
+
             if (window.itensOrcamento.length === 0) {
                 if (emptyState) emptyState.style.display = 'flex';
             } else {
                 if (emptyState) emptyState.style.display = 'none';
-                
+
                 window.itensOrcamento.forEach((item, index) => {
                     const qtd = item.qtd || 1;
                     const preco = Number(item.preco) || 0;
                     const mo = Number(item.mao_de_obra) || 0;
                     const frete = Number(item.frete) || 0;
-                    
+
                     const subProd = preco * qtd;
                     const subMO = mo * qtd;
                     const subFrete = frete * qtd;
                     const valorTotalItem = subProd + subMO + subFrete;
-                    
+
                     totalProd += subProd;
                     totalMO += subMO;
                     totalFrete += subFrete;
-                    
+
                     tbody.innerHTML += `
                     <tr class="group hover:bg-slate-50 border-b border-slate-50 last:border-0">
                         <td class="p-3 pl-5">
@@ -767,15 +779,15 @@
                     </tr>`;
                 });
             }
-            
+
             const total = totalProd + totalMO + totalFrete;
-            
+
             // Atualizar displays
             if (subtotalProdutos) subtotalProdutos.innerText = formatarMoeda(totalProd);
             if (subtotalMaoObra) subtotalMaoObra.innerText = formatarMoeda(totalMO);
             if (subtotalFrete) subtotalFrete.innerText = formatarMoeda(totalFrete);
             if (totalDisplay) totalDisplay.innerText = formatarMoeda(total);
-            
+
             // Atualizar campos ocultos
             if (inputValor) inputValor.value = total.toFixed(2).replace('.', ',');
             if (inputItensJson) inputItensJson.value = JSON.stringify(window.itensOrcamento);
@@ -794,7 +806,7 @@
             const tipo = document.getElementById('inline-tipo').value;
             const boxMO = document.getElementById('inline-box-mo');
             const boxFrete = document.getElementById('inline-box-frete');
-            
+
             if (tipo === 'Serviço') {
                 boxMO.classList.remove('hidden');
                 boxFrete.classList.add('hidden');
@@ -805,4 +817,5 @@
         }
     </script>
 </body>
+
 </html>
