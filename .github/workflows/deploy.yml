@@ -1,16 +1,28 @@
-name: Deploy Manual
+name: Deploy Hostinger
+
 on:
-  workflow_dispatch: # Permite acionar via botão na web ou CLI
-    inputs:
-      ambiente:
-        description: 'Onde fazer deploy?'
-        required: true
-        default: 'staging'
+  push:
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  web-deploy:
+    name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: echo "Fazendo deploy no ambiente ${{ inputs.ambiente }}..."
-      # Aqui entram seus scripts reais de deploy (AWS, DigitalOcean, Heroku, etc)
+    - name: 🚚 Pegar código mais recente
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 📂 Sincronizar arquivos com Hostinger
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: ./public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/.github/**
