@@ -22,7 +22,7 @@ jobs:
         username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTP_PASS }}
         # AQUI ESTÁ A CORREÇÃO:
-        server-dir: ./orcafacil/
+        server-dir: /orcafacil/
         exclude: |
           **/.git*
           **/.git*/**
