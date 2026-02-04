@@ -188,12 +188,12 @@ async function salvarOrcamento() {
         // Coleta itens do orçamento
         const itens = [];
         const rows = document.querySelectorAll('#itens-orcamento tr');
-        
+
         rows.forEach(row => {
             const desc = row.querySelector('.item-descricao')?.value;
             const valor = row.querySelector('.item-valor')?.value;
             const qtd = row.querySelector('.item-quantidade')?.value || 1;
-            
+
             if (desc && valor) {
                 itens.push({
                     descricao: desc,
@@ -247,7 +247,7 @@ async function salvarOrcamento() {
 
     } catch (e) {
         console.error("Erro ao salvar orçamento:", e);
-        alert("Erro ao salvar orçamento. Tente novamente.");
+        alert("Erro ao guardar orçamento. Tente novamente.");
     }
 }
 

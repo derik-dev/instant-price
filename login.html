@@ -196,6 +196,15 @@
                 icon.classList.replace('ph-eye-slash', 'ph-eye');
             }
         }
+
+        // Check URL parameters on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            if (mode === 'register') {
+                setMode('register');
+            }
+        });
     </script>
     <script src="app.js"></script>
 </body>

@@ -36,6 +36,19 @@ function converterParaEuro(valor, moedaOrigem) {
     return valorEmEUR;
 }
 
+// Helper para parsear moeda (PT-PT/BR: 1.000,00 -> 1000.00)
+function parseMoeda(valor) {
+    if (typeof valor === 'number') return valor;
+    if (!valor) return 0;
+    // Remove €, espaços, pontos (separador de milhar) e troca vírgula por ponto (decimal)
+    let limpo = valor.toString()
+        .replace('€', '')
+        .replace(/\s/g, '')
+        .replace(/\./g, '')
+        .replace(',', '.');
+    return parseFloat(limpo) || 0;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const pagina = window.location.pathname.split('/').pop() || 'index.html';
     const paginasLivres = ['index.html', 'login.html'];
@@ -53,7 +66,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (document.getElementById('tabela-completa')) carregarPaginaOrcamentos();
     if (document.getElementById('conf-nome')) carregarConfiguracoesSupabase();
     if (sb) carregarDadosUsuario();
+
+    // Attach currency mask globally to potential item fields if they exist
+    const camposPrecoItem = ['item-preco', 'item-mao-obra', 'item-frete'];
+    camposPrecoItem.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', () => formatarCampoMoedaGlobal(input));
+            input.addEventListener('blur', () => finalizarFormatacaoMoedaGlobal(input));
+        }
+    });
 });
+
+// Formatar valores monetários (€) - apenas limpa caracteres inválidos durante digitação
+function formatarCampoMoedaGlobal(input) {
+    let valor = input.value.replace(/[^\d.,]/g, '');
+    input.value = valor;
+}
+
+// Finalizar formatação ao sair do campo (blur)
+function finalizarFormatacaoMoedaGlobal(input) {
+    let valor = input.value.trim();
+    if (valor === '') return;
+
+    // Se o utilizador já colocou vírgula, manter como está
+    if (valor.includes(',')) {
+        const partes = valor.split(',');
+        let inteiro = partes[0];
+        let decimal = (partes[1] || '').slice(0, 2).padEnd(2, '0');
+        input.value = inteiro + ',' + decimal;
+    } else {
+        // Se não tem vírgula, adicionar ,00
+        let limpo = valor.replace(/\./g, '');
+        if (limpo && !isNaN(limpo)) {
+            input.value = limpo + ',00';
+        }
+    }
+}
 
 async function processarAuth() {
     if (!sb) return alert("Erro crítico: Supabase não carregado.");
@@ -132,7 +181,7 @@ async function carregarDadosUsuario() {
                 nomeReal = nomeReal.charAt(0).toUpperCase() + nomeReal.slice(1);
             }
 
-            nomeReal = nomeReal || 'Usuário';
+            nomeReal = nomeReal || 'Utilizador';
 
             console.log("Nome Definido:", nomeReal);
 
@@ -392,13 +441,16 @@ async function editarItem(id) {
 
 async function salvarItem() {
     const btn = document.querySelector('button[onclick="salvarItem()"]');
-    const id = document.getElementById('item-id').value;
+    // Ensure element exists before accessing value to avoid null pointer issues
+    const idElem = document.getElementById('item-id');
+    const id = idElem ? idElem.value : null;
+
     const nome = document.getElementById('item-nome').value;
-    const preco = document.getElementById('item-preco').value;
+    const preco = parseMoeda(document.getElementById('item-preco').value);
     const tipo = document.getElementById('item-tipo').value;
     const descricao = document.getElementById('item-descricao').value;
-    const mao_de_obra = document.getElementById('item-mao-obra') ? document.getElementById('item-mao-obra').value : 0;
-    const frete = document.getElementById('item-frete') ? document.getElementById('item-frete').value : 0;
+    const mao_de_obra = document.getElementById('item-mao-obra') ? parseMoeda(document.getElementById('item-mao-obra').value) : 0;
+    const frete = document.getElementById('item-frete') ? parseMoeda(document.getElementById('item-frete').value) : 0;
 
     if (!nome || !preco) return alert("Preencha campos Nome e Preço.");
 
@@ -410,9 +462,9 @@ async function salvarItem() {
 
         const payload = {
             nome,
-            preco: parseFloat(preco),
-            mao_de_obra: parseFloat(mao_de_obra || 0),
-            frete: parseFloat(frete || 0),
+            preco: preco,
+            mao_de_obra: mao_de_obra,
+            frete: frete,
             tipo,
             descricao,
             user_id: user.id
@@ -430,9 +482,19 @@ async function salvarItem() {
 
         if (error) throw error;
 
-        toggleModal('modal-item', 'close');
-        document.getElementById('form-item').reset();
-        carregarCatalogo();
+        // Check if we are in a modal or standalone page
+        const modal = document.getElementById('modal-item');
+        // If modal exists and is not hidden (simple check), we close it. 
+        // Better check: are we on 'catalogo.html'?
+        if (modal && !modal.classList.contains('hidden')) {
+            toggleModal('modal-item', 'close');
+            document.getElementById('form-item').reset();
+            carregarCatalogo();
+        } else {
+            // Standalone page behavior
+            alert("Item guardado com sucesso!");
+            window.location.href = 'catalogo.html';
+        }
 
     } catch (err) {
         console.error(err);
@@ -491,9 +553,8 @@ window.salvarOrcamentoCompleto = async function () {
     const valorEl = document.getElementById('orc-valor') || document.getElementById('input-valor');
     let valorTexto = valorEl.value || valorEl.innerText;
 
-    // Limpa valor: Remove €, espaços, pontos de milhar (todos) e troca vírgula decimal por ponto
-    valorTexto = valorTexto.replace('€', '').trim().replace(/\./g, '').replace(',', '.');
-    const valor = parseFloat(valorTexto);
+    // Usa parseMoeda para interpretar corretamente
+    const valor = parseMoeda(valorTexto);
 
     if (!cliente) return alert("Selecione ou preencha os dados do cliente.");
     if (isNaN(valor) || valor <= 0) return alert("Valor inválido. Use o formato: 250,00");
@@ -581,7 +642,7 @@ async function carregarPaginaOrcamentos() {
         <tr class="hover:bg-slate-50/80 transition-colors group">
             <td class="p-4 pl-6 font-bold text-slate-900">${nomeCliente}</td>
             <td class="p-4 hidden md:table-cell text-slate-500 text-sm">${email}</td>
-            <td class="p-4 font-bold">${displayValor}</td>
+            <td class="p-4 font-bold whitespace-nowrap">${displayValor}</td>
             <td class="p-4 hidden md:table-cell">${status}</td>
             <td class="p-4 hidden lg:table-cell text-slate-500">${formatarData(orc.created_at)}</td>
             <td class="p-4 pr-6 text-center flex justify-center gap-1">
@@ -873,7 +934,7 @@ async function carregarDetalhes() {
         }
     }
 
-    // Carrega Dados da Empresa do Usuário
+    // Carrega Dados da Empresa do Utilizador
     const { data: empresa } = await sb.from('empresas').select('*').eq('user_id', orc.user_id).maybeSingle();
     if (empresa) {
         if (document.getElementById('empresa-nome')) document.getElementById('empresa-nome').innerText = empresa.nome || 'Sua Empresa';
@@ -1071,7 +1132,7 @@ async function salvarConfiguracoesSupabase() {
         }, 500);
 
     } catch (err) {
-        alert("Erro ao salvar: " + err.message);
+        alert("Erro ao guardar: " + err.message);
         console.error(err);
     } finally {
         if (btn) setBtnLoading(btn, false, '<i class="ph-bold ph-check"></i> Guardar');
@@ -1252,7 +1313,7 @@ async function gerarNovaApiKey() {
 
         if (error) throw error;
 
-        // Mostra a chave para o usuário copiar
+        // Mostra a chave para o utilizador copiar
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4';
         modal.innerHTML = `

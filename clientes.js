@@ -162,6 +162,6 @@ async function salvarClienteRapido() {
         document.getElementById('select-cliente').value = data[0].id;
     } catch (e) {
         console.error("Erro ao salvar cliente rápido:", e);
-        alert("Erro ao salvar cliente. Tente novamente.");
+        alert("Erro ao guardar cliente. Tente novamente.");
     }
 }
