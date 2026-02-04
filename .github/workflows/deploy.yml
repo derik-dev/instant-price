@@ -1,0 +1,16 @@
+name: Deploy Manual
+on:
+  workflow_dispatch: # Permite acionar via botão na web ou CLI
+    inputs:
+      ambiente:
+        description: 'Onde fazer deploy?'
+        required: true
+        default: 'staging'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Fazendo deploy no ambiente ${{ inputs.ambiente }}..."
+      # Aqui entram seus scripts reais de deploy (AWS, DigitalOcean, Heroku, etc)
