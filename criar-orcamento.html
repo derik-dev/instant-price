@@ -47,8 +47,8 @@
     </header>
 
     <main class="flex-1 flex flex-col items-center justify-center p-4 pb-32">
-        <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-8 flex items-center gap-2">
-            <i class="ph-duotone ph-file-plus text-blue-600"></i> Criar Novo Orçamento
+        <h1 id="page-title" class="text-2xl md:text-3xl font-bold text-slate-900 mb-8 flex items-center gap-2">
+            <i class="ph-duotone ph-file-plus text-blue-600"></i> <span id="title-text">Criar Novo Orçamento</span>
         </h1>
 
         <div class="bg-white w-full max-w-4xl p-8 rounded-xl shadow-xl shadow-slate-200/60 border border-slate-100">
@@ -311,6 +311,7 @@
                 <input type="hidden" id="input-mao-obra-total" value="0">
                 <input type="hidden" id="input-itens-json" value="[]">
                 <input type="hidden" id="subtotal-display" value="€ 0,00">
+                <input type="hidden" id="edit-orcamento-id" value="">
             </form>
         </div>
     </main>
@@ -421,7 +422,65 @@
                 const hoje = new Date().toISOString().split('T')[0];
                 dataInput.value = hoje;
             }
+
+            // Verificar se está em modo de edição
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+
+            if (editId) {
+                await carregarOrcamentoParaEdicao(editId);
+            }
         });
+
+        // Função para carregar orçamento existente para edição
+        async function carregarOrcamentoParaEdicao(id) {
+            try {
+                // Buscar orçamento do banco
+                const { data: orc, error } = await sb.from('orcamentos').select('*').eq('id', id).single();
+                if (error) throw error;
+                if (!orc) throw new Error('Orçamento não encontrado');
+
+                // Salvar ID para edição
+                document.getElementById('edit-orcamento-id').value = id;
+
+                // Atualizar título da página
+                document.getElementById('title-text').innerText = `Editar Orçamento #${id}`;
+                document.title = `Editar Orçamento #${id} • OrçaFácil`;
+
+                // Atualizar botão de salvar
+                const btnSalvar = document.querySelector('button[onclick="salvarOrcamentoCompleto()"]');
+                if (btnSalvar) {
+                    btnSalvar.innerHTML = '<i class="ph-bold ph-floppy-disk text-xl"></i> <span>Atualizar Orçamento</span>';
+                }
+
+                // Preencher cliente
+                const selectCliente = document.getElementById('select-cliente');
+                if (selectCliente && orc.cliente) {
+                    selectCliente.value = orc.cliente;
+                    await preencherDadosCliente(); // Preenche os campos do cliente
+                }
+
+                // Preencher itens do orçamento
+                if (orc.itens_json && Array.isArray(orc.itens_json)) {
+                    window.itensOrcamento = orc.itens_json.map(item => ({
+                        id: item.id,
+                        nome: item.nome,
+                        descricao: item.descricao || '',
+                        preco: Number(item.preco) || 0,
+                        tipo: item.tipo || 'Serviço',
+                        qtd: item.qtd || 1,
+                        mao_de_obra: Number(item.mao_de_obra) || 0,
+                        frete: Number(item.frete) || 0
+                    }));
+                    atualizarTabelaItens();
+                }
+
+                console.log('Orçamento carregado para edição:', orc);
+            } catch (error) {
+                console.error('Erro ao carregar orçamento para edição:', error);
+                alert('Erro ao carregar orçamento: ' + error.message);
+            }
+        }
 
         // Função para abrir modal de novo cliente
         function novoCliente() {

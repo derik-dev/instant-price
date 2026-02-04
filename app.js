@@ -546,6 +546,11 @@ async function removerItem(id) {
 window.salvarOrcamentoCompleto = async function () {
     const btn = document.querySelector('button[onclick="salvarOrcamentoCompleto()"]') || document.querySelector('button[onclick="criarOrcamento()"]');
 
+    // Verificar se está em modo de edição
+    const editIdEl = document.getElementById('edit-orcamento-id');
+    const editId = editIdEl ? editIdEl.value : null;
+    const isEditMode = editId && editId.length > 0;
+
     // Salvar cliente automaticamente se for novo
     let clienteId = window.salvarClienteSeNovo ? await window.salvarClienteSeNovo() : document.getElementById('select-cliente').value;
 
@@ -580,11 +585,12 @@ window.salvarOrcamentoCompleto = async function () {
 
     if (!cliente) return alert("Selecione um cliente.");
 
-    if (btn) setBtnLoading(btn, true, "A Gerar Documento...");
+    if (btn) setBtnLoading(btn, true, isEditMode ? "A Atualizar..." : "A Gerar Documento...");
 
     try {
         const { data: { user } } = await sb.auth.getUser();
-        const { data: novoOrc, error } = await sb.from('orcamentos').insert([{
+
+        const payload = {
             cliente,
             valor: parseFloat(valor),
             mao_de_obra: maoObraTotal,
@@ -593,16 +599,39 @@ window.salvarOrcamentoCompleto = async function () {
             pagamento,
             chave_pix: pix,
             moeda,
-            status: 'Pendente',
-            user_id: user.id,
             itens_json: itensJson
-        }]).select();
+        };
 
-        if (error) throw error;
-        window.location.href = `detalhes.html?id=${novoOrc[0].id}`;
+        let resultId;
+
+        if (isEditMode) {
+            // Modo EDIÇÃO: fazer UPDATE
+            const { data: updatedOrc, error } = await sb.from('orcamentos')
+                .update(payload)
+                .eq('id', editId)
+                .select();
+
+            if (error) throw error;
+            resultId = editId;
+            console.log('Orçamento atualizado:', updatedOrc);
+        } else {
+            // Modo CRIAÇÃO: fazer INSERT
+            payload.status = 'Pendente';
+            payload.user_id = user.id;
+
+            const { data: novoOrc, error } = await sb.from('orcamentos')
+                .insert([payload])
+                .select();
+
+            if (error) throw error;
+            resultId = novoOrc[0].id;
+            console.log('Orçamento criado:', novoOrc);
+        }
+
+        window.location.href = `detalhes.html?id=${resultId}`;
     } catch (err) {
         alert(err.message);
-        if (btn) setBtnLoading(btn, false, 'Guardar');
+        if (btn) setBtnLoading(btn, false, isEditMode ? 'Atualizar' : 'Guardar');
     }
 }
 
@@ -639,16 +668,17 @@ async function carregarPaginaOrcamentos() {
         let displayValor = `<span class="text-green-600">${formatarMoeda(valorEuro)}</span>`;
 
         tbody.innerHTML += `
-        <tr class="hover:bg-slate-50/80 transition-colors group">
+        <tr class="hover:bg-slate-50/80 transition-colors group cursor-pointer" onclick="window.location.href='criar-orcamento.html?edit=${orc.id}'">
             <td class="p-4 pl-6 font-bold text-slate-900">${nomeCliente}</td>
             <td class="p-4 hidden md:table-cell text-slate-500 text-sm">${email}</td>
             <td class="p-4 font-bold whitespace-nowrap">${displayValor}</td>
             <td class="p-4 hidden md:table-cell">${status}</td>
             <td class="p-4 hidden lg:table-cell text-slate-500">${formatarData(orc.created_at)}</td>
-            <td class="p-4 pr-6 text-center flex justify-center gap-1">
-                <a href="detalhes.html?id=${orc.id}" class="w-8 h-8 flex items-center justify-center rounded border border-slate-200 text-slate-500 hover:text-blue-600"><i class="ph-bold ph-eye"></i></a>
-                ${orc.status !== 'Aprovado' ? `<button onclick="aprovarOrcamento(${orc.id})" class="w-8 h-8 flex items-center justify-center rounded border border-slate-200 text-slate-500 hover:text-green-600"><i class="ph-bold ph-check"></i></button>` : ''}
-                <button onclick="removerOrcamento(${orc.id})" class="w-8 h-8 flex items-center justify-center rounded border border-slate-200 text-slate-500 hover:text-red-600"><i class="ph-bold ph-trash"></i></button>
+            <td class="p-4 pr-6 text-center flex justify-center gap-1" onclick="event.stopPropagation()">
+                <a href="detalhes.html?id=${orc.id}" class="w-8 h-8 flex items-center justify-center rounded border border-slate-200 text-slate-500 hover:text-blue-600" title="Ver"><i class="ph-bold ph-eye"></i></a>
+                <a href="criar-orcamento.html?edit=${orc.id}" class="w-8 h-8 flex items-center justify-center rounded border border-slate-200 text-slate-500 hover:text-amber-600" title="Editar"><i class="ph-bold ph-pencil-simple"></i></a>
+                ${orc.status !== 'Aprovado' ? `<button onclick="aprovarOrcamento(${orc.id})" class="w-8 h-8 flex items-center justify-center rounded border border-slate-200 text-slate-500 hover:text-green-600" title="Aprovar"><i class="ph-bold ph-check"></i></button>` : ''}
+                <button onclick="removerOrcamento(${orc.id})" class="w-8 h-8 flex items-center justify-center rounded border border-slate-200 text-slate-500 hover:text-red-600" title="Remover"><i class="ph-bold ph-trash"></i></button>
             </td>
         </tr>`;
     });
