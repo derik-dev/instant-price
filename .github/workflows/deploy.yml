@@ -18,9 +18,10 @@ jobs:
     - name: 📂 Sincronizar arquivos com Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
+        # Agora usando os nomes EXATOS que você criou
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USER }}
+        password: ${{ secrets.FTP_PASS }}
         server-dir: ./public_html/
         exclude: |
           **/.git*
