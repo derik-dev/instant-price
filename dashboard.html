@@ -105,55 +105,59 @@
 
         <!-- Wrapper para Reordenar no Mobile -->
         <div class="flex flex-col lg:block">
-            <!-- KPI Section -->
-            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 order-last lg:order-none">
+            <!-- Ações e Recentes -->
+            <section class="grid grid-cols-1 lg:grid-cols-5 gap-8 animate-enter order-first mb-10 lg:mb-0">
 
-                <div
-                    class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-blue-500/5 hover-scale animate-enter delay-100 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <i class="ph-duotone ph-file-text text-6xl text-blue-500"></i>
-                    </div>
-                    <p class="text-sm text-slate-500 font-bold mb-1">Total de Orçamentos</p>
-                    <h3 id="kpi-total" class="text-4xl font-bold text-slate-900">0</h3>
+                <div class="lg:col-span-2 space-y-6">
+                    <h2 class="text-lg font-bold text-slate-900">Ações Rápidas</h2>
+
+                    <a href="criar-orcamento.html"
+                        class="group block w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex justify-center items-center gap-2 transform active:scale-95">
+                        <i class="ph-bold ph-plus group-hover:rotate-90 transition-transform"></i> Novo Orçamento
+                    </a>
+
                     <div
-                        class="mt-4 flex items-center gap-2 text-xs font-bold text-blue-600 bg-blue-50 w-fit px-2 py-1 rounded">
-                        <i class="ph-bold ph-trend-up"></i> GERAL
+                        class="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-100 overflow-hidden shadow-sm">
+                        <a href="criar-item.html"
+                            class="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-slate-700 font-medium group">
+                            <div
+                                class="bg-slate-100 p-2 rounded-lg text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                                <i class="ph-bold ph-cube"></i>
+                            </div>
+                            Criar Item
+                            <i class="ph-bold ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500"></i>
+                        </a>
+                        <a href="clientes.html"
+                            class="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-slate-700 font-medium group">
+                            <div
+                                class="bg-slate-100 p-2 rounded-lg text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                                <i class="ph-bold ph-user-plus"></i>
+                            </div>
+                            Adicionar Cliente
+                            <i class="ph-bold ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500"></i>
+                        </a>
+                        <a href="catalogo.html"
+                            class="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-slate-700 font-medium group">
+                            <div
+                                class="bg-slate-100 p-2 rounded-lg text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
+                                <i class="ph-bold ph-book-bookmark"></i>
+                            </div>
+                            Ver Catálogo
+                            <i class="ph-bold ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500"></i>
+                        </a>
                     </div>
                 </div>
 
-                <div
-                    class="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-xl shadow-blue-600/20 hover-scale animate-enter delay-200 relative overflow-hidden">
-                    <div class="absolute -right-6 -bottom-6 opacity-20">
-                        <i class="ph-fill ph-currency-dollar text-9xl"></i>
-                    </div>
-                    <p class="text-sm font-medium mb-1 text-blue-100">Receita Aprovada</p>
-                    <h3 id="kpi-faturado" class="text-3xl md:text-4xl font-bold">€ 0,00</h3>
-                    <p class="text-xs text-blue-200 mt-2 opacity-80">Valor total de orçamentos fechados.</p>
-                </div>
+                <div class="lg:col-span-3 space-y-6">
+                    <h2 class="text-lg font-bold text-slate-900 flex justify-between items-center">
+                        Recentes
+                        <a href="orcamentos.html" class="text-xs font-bold text-blue-600 hover:text-blue-800">Ver
+                            Todos</a>
+                    </h2>
 
-                <div
-                    class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-green-500/5 hover-scale animate-enter delay-300 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <i class="ph-duotone ph-check-circle text-6xl text-green-500"></i>
-                    </div>
-                    <p class="text-sm text-slate-500 font-bold mb-1">Aprovados</p>
-                    <h3 id="kpi-aprovado" class="text-4xl font-bold text-slate-900">0</h3>
-                    <div
-                        class="mt-4 flex items-center gap-2 text-xs font-bold text-green-600 bg-green-50 w-fit px-2 py-1 rounded">
-                        <i class="ph-bold ph-check"></i> SUCESSO
-                    </div>
-                </div>
-
-                <div
-                    class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-orange-500/5 hover-scale animate-enter delay-300 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                        <i class="ph-duotone ph-clock text-6xl text-orange-500"></i>
-                    </div>
-                    <p class="text-sm text-slate-500 font-bold mb-1">Pendentes</p>
-                    <h3 id="kpi-pendente" class="text-4xl font-bold text-slate-900">0</h3>
-                    <div
-                        class="mt-4 flex items-center gap-2 text-xs font-bold text-orange-600 bg-orange-50 w-fit px-2 py-1 rounded">
-                        <i class="ph-bold ph-hourglass"></i> AGUARDANDO
+                    <div class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm min-h-[300px]">
+                        <ul id="lista-orcamentos-recentes" class="divide-y divide-slate-50">
+                        </ul>
                     </div>
                 </div>
             </section>
@@ -224,59 +228,55 @@
 
             </section>
 
-            <!-- Ações e Recentes -->
-            <section class="grid grid-cols-1 lg:grid-cols-5 gap-8 animate-enter delay-300 order-first mb-10 lg:mb-0">
+            <!-- KPI Section -->
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 order-last lg:order-none">
 
-                <div class="lg:col-span-2 space-y-6">
-                    <h2 class="text-lg font-bold text-slate-900">Ações Rápidas</h2>
-
-                    <a href="criar-orcamento.html"
-                        class="group block w-full bg-blue-600 hover:bg-blue-700 text-white text-center font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex justify-center items-center gap-2 transform active:scale-95">
-                        <i class="ph-bold ph-plus group-hover:rotate-90 transition-transform"></i> Novo Orçamento
-                    </a>
-
+                <div
+                    class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-blue-500/5 hover-scale animate-enter delay-100 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="ph-duotone ph-file-text text-6xl text-blue-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 font-bold mb-1">Total de Orçamentos</p>
+                    <h3 id="kpi-total" class="text-4xl font-bold text-slate-900">0</h3>
                     <div
-                        class="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-100 overflow-hidden shadow-sm">
-                        <a href="criar-item.html"
-                            class="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-slate-700 font-medium group">
-                            <div
-                                class="bg-slate-100 p-2 rounded-lg text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
-                                <i class="ph-bold ph-cube"></i>
-                            </div>
-                            Criar Item
-                            <i class="ph-bold ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500"></i>
-                        </a>
-                        <a href="clientes.html"
-                            class="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-slate-700 font-medium group">
-                            <div
-                                class="bg-slate-100 p-2 rounded-lg text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
-                                <i class="ph-bold ph-user-plus"></i>
-                            </div>
-                            Adicionar Cliente
-                            <i class="ph-bold ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500"></i>
-                        </a>
-                        <a href="catalogo.html"
-                            class="w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-slate-700 font-medium group">
-                            <div
-                                class="bg-slate-100 p-2 rounded-lg text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
-                                <i class="ph-bold ph-book-bookmark"></i>
-                            </div>
-                            Ver Catálogo
-                            <i class="ph-bold ph-caret-right ml-auto text-slate-300 group-hover:text-blue-500"></i>
-                        </a>
+                        class="mt-4 flex items-center gap-2 text-xs font-bold text-blue-600 bg-blue-50 w-fit px-2 py-1 rounded">
+                        <i class="ph-bold ph-trend-up"></i> GERAL
                     </div>
                 </div>
 
-                <div class="lg:col-span-3 space-y-6">
-                    <h2 class="text-lg font-bold text-slate-900 flex justify-between items-center">
-                        Recentes
-                        <a href="orcamentos.html" class="text-xs font-bold text-blue-600 hover:text-blue-800">Ver
-                            Todos</a>
-                    </h2>
+                <div
+                    class="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-xl shadow-blue-600/20 hover-scale animate-enter delay-200 relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 opacity-20">
+                        <i class="ph-fill ph-currency-dollar text-9xl"></i>
+                    </div>
+                    <p class="text-sm font-medium mb-1 text-blue-100">Receita Aprovada</p>
+                    <h3 id="kpi-faturado" class="text-3xl md:text-4xl font-bold">€ 0,00</h3>
+                    <p class="text-xs text-blue-200 mt-2 opacity-80">Valor total de orçamentos fechados.</p>
+                </div>
 
-                    <div class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm min-h-[300px]">
-                        <ul id="lista-orcamentos-recentes" class="divide-y divide-slate-50">
-                        </ul>
+                <div
+                    class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-green-500/5 hover-scale animate-enter delay-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="ph-duotone ph-check-circle text-6xl text-green-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 font-bold mb-1">Aprovados</p>
+                    <h3 id="kpi-aprovado" class="text-4xl font-bold text-slate-900">0</h3>
+                    <div
+                        class="mt-4 flex items-center gap-2 text-xs font-bold text-green-600 bg-green-50 w-fit px-2 py-1 rounded">
+                        <i class="ph-bold ph-check"></i> SUCESSO
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white p-6 rounded-2xl border border-slate-100 shadow-xl shadow-orange-500/5 hover-scale animate-enter delay-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="ph-duotone ph-clock text-6xl text-orange-500"></i>
+                    </div>
+                    <p class="text-sm text-slate-500 font-bold mb-1">Pendentes</p>
+                    <h3 id="kpi-pendente" class="text-4xl font-bold text-slate-900">0</h3>
+                    <div
+                        class="mt-4 flex items-center gap-2 text-xs font-bold text-orange-600 bg-orange-50 w-fit px-2 py-1 rounded">
+                        <i class="ph-bold ph-hourglass"></i> AGUARDANDO
                     </div>
                 </div>
             </section>
