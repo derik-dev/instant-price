@@ -18,11 +18,11 @@ jobs:
     - name: 📂 Sincronizar arquivos com Hostinger
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        # Agora usando os nomes EXATOS que você criou
         server: ${{ secrets.FTP_HOST }}
         username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTP_PASS }}
-        server-dir: ./public_html/
+        # AQUI ESTÁ A CORREÇÃO:
+        server-dir: ./orcafacil/
         exclude: |
           **/.git*
           **/.git*/**
