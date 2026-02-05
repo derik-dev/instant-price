@@ -801,10 +801,7 @@ async function carregarDetalhes() {
     // Popula dados do orçamento
     if (document.getElementById('orc-id')) document.getElementById('orc-id').innerText = `#${String(orc.id).padStart(4, '0')}`;
 
-    // Configura botão de editar
-    if (document.getElementById('btn-editar')) {
-        document.getElementById('btn-editar').href = `criar-orcamento.html?edit=${orc.id}`;
-    }
+
     if (document.getElementById('orc-data')) document.getElementById('orc-data').innerText = formatarData(orc.created_at);
     if (document.getElementById('orc-valor')) document.getElementById('orc-valor').innerText = formatarMoeda(orc.valor);
     if (document.getElementById('orc-pagamento')) {
